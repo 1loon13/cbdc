@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Дослідження вибору платіжних засобів</title>
+<style>
+/* ES5/IE11-safe: без CSS-змінних, без flex gap, без inset, без :has/:focus-visible-залежностей */
+*{box-sizing:border-box}
+html{font-size:18px;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%}
+body{margin:0;background:#fff;color:#111;font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif;font-size:18px;line-height:1.4}
+button,input,select,textarea{font-family:inherit;font-size:inherit;color:inherit}
+button{cursor:pointer}
+button:focus,input:focus,a:focus{outline:3px solid #2563eb;outline-offset:2px}
+#app{display:block}
+.page{max-width:1000px;margin:0 auto;padding:36px 28px 120px;min-height:100vh;position:relative}
+h1{font-size:28px;line-height:1.25;margin:0 0 20px;font-weight:700}
+h2{font-size:22px;line-height:1.3;margin:0 0 12px}
+p{margin:0 0 14px}
+.muted{color:#4a4a4a}
+.small{font-size:14px}
+.lead{font-size:19px}
+.btn{display:inline-block;border:2px solid #1d3a5f;background:#1d3a5f;color:#fff;border-radius:6px;padding:12px 28px;font-size:18px;font-weight:600;min-height:48px;margin:0 12px 10px 0;-webkit-appearance:none}
+.btn[disabled]{background:#9a9a9a;border-color:#9a9a9a;color:#fff;cursor:not-allowed}
+.btn.secondary{background:#fff;color:#1d3a5f}
+.btn-row{margin-top:26px}
+.btn-row:after{content:"";display:table;clear:both}
+.stop-wrap{max-width:1000px;margin:-80px auto 0;padding:0 28px 30px;position:relative;z-index:2}
+.stop{background:#fff;border:1px solid #767676;color:#333;border-radius:6px;padding:8px 14px;font-size:14px;text-decoration:underline}
+.check{display:block;margin:12px 0;cursor:pointer;padding-left:34px;position:relative}
+.check input{position:absolute;left:0;top:1px;width:22px;height:22px;margin:0}
+.counter{font-size:15px;color:#555;margin-bottom:6px}
+.q{margin:0 0 28px}
+.q-title{font-weight:600;margin-bottom:10px}
+.opt{display:block;border:1px solid #bdbdbd;border-radius:8px;padding:11px 14px 11px 46px;cursor:pointer;background:#fff;margin-bottom:8px;position:relative}
+.opt input{position:absolute;left:14px;top:50%;margin:-10px 0 0 0;width:20px;height:20px}
+.opt.sel{border-color:#1d3a5f;background:#eef3f8}
+/* шкали: ширини у відсотках — вміщаються і на телефоні */
+.scale{white-space:nowrap;font-size:0;max-width:560px}
+.scale.s7{max-width:400px}
+.scale .sc{display:inline-block;position:relative;font-size:18px;vertical-align:top}
+.scale.s10 .sc{width:9.1%;margin-right:.9%}
+.scale.s7 .sc{width:13%;margin-right:1.5%}
+.scale input{position:absolute;left:0;top:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.scale label{display:block;text-align:center;height:44px;line-height:42px;border:1px solid #767676;border-radius:6px;background:#fff;cursor:pointer}
+.scale input:checked+label{background:#1d3a5f;color:#fff;border-color:#1d3a5f}
+.scale input:focus+label{outline:3px solid #2563eb;outline-offset:2px}
+.anchors{max-width:560px;font-size:14px;color:#555;margin-top:5px;overflow:hidden}
+.anchors.s7{max-width:400px}
+.anchors .l{float:left}.anchors .r{float:right}
+.row-item{margin-bottom:24px}
+.row-item .lbl{font-weight:600;margin-bottom:8px}
+.lk-head{font-size:14px;color:#555;margin-bottom:12px}
+.lk-row{border-top:1px solid #e3e3e3;padding:14px 0}
+.lk-row .stmt{margin-bottom:8px}
+/* таблиця порівняння */
+.cmp{width:100%;border-collapse:collapse;font-size:16px;margin-top:8px}
+.cmp th,.cmp td{border:1px solid #c9c9c9;padding:10px 12px;vertical-align:top;text-align:left}
+.cmp thead th{background:#eef1f5}
+.cmp td.k{font-weight:600;background:#fafafa;width:18%}
+.yn-row{border-top:1px solid #e3e3e3;padding:14px 0;overflow:hidden}
+.yn-row .t{float:left;width:68%;padding-top:8px}
+.yn-row .yn{float:right}
+.yn label{display:inline-block;border:1px solid #767676;border-radius:6px;padding:8px 18px;margin-left:8px;cursor:pointer;position:relative}
+.yn input{position:absolute;opacity:0;left:0;top:0;width:100%;height:100%;margin:0;cursor:pointer}
+.yn label.on{background:#1d3a5f;color:#fff;border-color:#1d3a5f}
+/* завдання вибору */
+.task-title{font-size:23px;font-weight:700;margin:24px 0 22px;line-height:1.3}
+.pair{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;border:1px solid #bdbdbd;border-radius:8px;overflow:hidden}
+.opt-card{-ms-flex:1 1 50%;flex:1 1 50%;width:50%;padding:22px 18px;text-align:center;border-left:1px solid #bdbdbd;background:#fff}
+.opt-card.first{border-left:none}
+.opt-card .name{font-size:20px;font-weight:600;margin-bottom:18px;min-height:56px}
+.opt-card.neutral .name{background:#f3f3f3;margin:-22px -18px 18px;padding:22px 12px;border-bottom:1px solid #bdbdbd}
+.opt-card .name{min-height:3.2em}
+.opt-card.neutral .name{min-height:4.6em}
+.opt-card .btn{margin:0;min-width:150px}
+/* нейтральна пара */
+.pair-t{width:100%;table-layout:fixed;border-collapse:collapse;border:1px solid #bdbdbd}
+.pair-t th,.pair-t td{width:50%;border:1px solid #bdbdbd;text-align:center;vertical-align:middle}
+.pair-t th{background:#f3f3f3;font-size:20px;font-weight:600;padding:22px 12px}
+.pair-t td{padding:18px 12px;background:#fff}
+.pair-t .btn{margin:0;min-width:150px}
+/* dominance */
+.pair.dom .enh{-ms-flex:1 1 64%;flex:1 1 64%;width:64%;background:#eaf1f8}
+.pair.dom .sup{-ms-flex:1 1 36%;flex:1 1 36%;width:36%}
+.pair.dom .enh .name{font-size:22px;font-weight:700}
+.pair.dom .sup .name{font-size:15px;font-weight:400;color:#333}
+.pair.dom .o1{-ms-flex-order:1;order:1}.pair.dom .o2{-ms-flex-order:2;order:2}
+.pair.dom .o1{border-left:none}
+.pair.dom .o2{border-left:1px solid #bdbdbd}
+.linkbtn{background:none;border:none;padding:6px 2px;color:#5f5f5f;font-size:14px;text-decoration:underline;cursor:pointer}
+.timer{border:2px solid #c4161c;border-radius:8px;padding:10px 16px;margin-bottom:8px;color:#c4161c;background:#fff5f5}
+.timer .digits{font-family:Consolas,"Courier New",monospace;font-size:30px;font-weight:700;margin-right:12px;vertical-align:middle}
+.timer .tlabel{vertical-align:middle;font-size:15px}
+.expired{border:2px solid #8a4b00;background:#fff8ec;border-radius:8px;padding:12px 16px;margin-bottom:8px;font-weight:600;color:#6b3a00}
+/* ШІ */
+.ai-intro{font-size:19px;color:#1d3a5f}
+.ai-q{background:#eef1f5;border:1px solid #c9d2dc;padding:16px 18px;font-weight:600;color:#1d3a5f;margin:18px 0 22px}
+.wait{text-align:center;padding-top:14vh}
+.hourglass{width:64px;height:96px;margin:0 auto 18px;border:4px solid #1d6a8a;border-radius:6px;position:relative;overflow:hidden}
+.hourglass:after{content:"";position:absolute;left:12px;right:12px;bottom:6px;height:22px;background:#1d6a8a;border-radius:4px 4px 0 0}
+.dots span{display:inline-block;width:10px;height:10px;border-radius:50%;background:#bdbdbd;margin:0 6px;-webkit-animation:pl 1s infinite;animation:pl 1s infinite}
+.dots span.d2{-webkit-animation-delay:.15s;animation-delay:.15s}.dots span.d3{-webkit-animation-delay:.3s;animation-delay:.3s}
+@-webkit-keyframes pl{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes pl{0%,100%{opacity:.25}50%{opacity:1}}
+.ai-answer{border:1px solid #c9d2dc;border-left:4px solid #1d3a5f;padding:18px 20px;background:#fff;font-size:18px;color:#1d3a5f}
+.ai-answer .who{font-size:14px;color:#555;margin-bottom:8px;font-weight:600}
+.final-opt{display:block;width:100%;text-align:left;border:2px solid #1d3a5f;background:#fff;color:#1d3a5f;font-weight:700;padding:14px 16px;margin-bottom:14px;border-radius:4px;font-size:18px}
+.final-opt:hover{background:#eef3f8}
+.trans{text-align:center;padding-top:28vh}
+/* оверлеї */
+.ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:50;overflow:auto;padding:20px}
+.ov .box{background:#fff;border-radius:10px;padding:26px;max-width:560px;margin:12vh auto 0;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.ov.full{background:#fff}
+.ov.full .box{box-shadow:none;text-align:center;max-width:640px}
+.saving{position:fixed;right:16px;bottom:16px;font-size:14px;color:#555;z-index:6}
+.err{color:#b00020;font-size:15px;margin-top:6px}
+/* оператор */
+.op{position:fixed;top:0;left:0;right:0;bottom:0;background:#f4f5f7;z-index:100;overflow:auto;font-size:15px;-webkit-overflow-scrolling:touch}
+.op .wrap{max-width:980px;margin:0 auto;padding:20px}
+.op h2{font-size:20px}
+.op h3{font-size:16px;margin:0 0 10px}
+.op .sec{background:#fff;border:1px solid #dcdcdc;border-radius:10px;padding:16px;margin-bottom:14px}
+.op label.f{display:block;font-weight:600;margin:10px 0 4px}
+.op input[type=text],.op input[type=password],.op select,.op textarea{width:100%;padding:8px 10px;border:1px solid #bbb;border-radius:6px;background:#fff;font-size:15px}
+.op textarea{font-family:Consolas,monospace;font-size:12px;height:180px}
+.op .btn{font-size:15px;padding:8px 14px;min-height:0;margin:8px 8px 0 0}
+.op table.kv{border-collapse:collapse;width:100%}
+.op table.kv td{padding:4px 8px 4px 0;vertical-align:top}
+.op table.kv td.k{color:#555;width:42%}
+.op .ok{color:#17702e;font-weight:600}.op .bad{color:#b00020;font-weight:600}
+.op ol{padding-left:20px}.op li{margin-bottom:6px}
+.op code{background:#eee;padding:1px 5px;border-radius:4px}
+.op .half{display:inline-block;width:49%;vertical-align:top}
+.op .half+.half{margin-left:1.5%}
+@media (max-width:700px){
+  html,body{font-size:17px}
+  .page{padding:20px 16px 110px}
+  h1{font-size:23px}
+  .task-title{font-size:20px}
+  .opt-card .name{font-size:17px}
+  .pair-t th{font-size:17px;padding:16px 8px}
+  .pair-t td{padding:14px 8px}
+  .pair-t .btn{min-width:0;width:100%;padding:12px 6px}
+  .pair.dom .enh .name{font-size:19px}
+  .opt-card{padding:16px 10px}
+  .opt-card .btn{min-width:0;width:100%;padding:12px 8px}
+  .opt-card.neutral .name{margin:-16px -10px 14px;padding:16px 8px}
+  .yn-row .t{float:none;width:auto;padding-top:0;margin-bottom:8px}
+  .yn-row .yn{float:none}
+  .yn label{margin:0 8px 0 0}
+  .scale .sc label{height:40px;line-height:38px;font-size:16px}
+  .cmp,.cmp thead,.cmp tbody,.cmp tr,.cmp th,.cmp td{display:block;width:auto}
+  .cmp thead{display:none}
+  .cmp tr{border:1px solid #c9c9c9;margin-bottom:12px}
+  .cmp td{border:none;border-top:1px solid #e3e3e3}
+  .cmp td.k{width:auto;border-top:none}
+  .cmp td .hd{display:block;font-size:13px;color:#555;font-weight:600;margin-bottom:2px}
+  .op .half{display:block;width:auto}.op .half+.half{margin-left:0}
+  .stop-wrap{padding:0 16px 24px;margin-top:-70px}
+}
+@media (min-width:701px){ .cmp td .hd{display:none} }
+
+</style>
+</head>
+<body>
+<noscript><p style="padding:40px;font-size:20px">Для роботи потрібно увімкнути JavaScript. Зверніться до дослідника.</p></noscript>
+<div id="app" aria-live="polite"><p style="padding:40px;font-size:18px">Завантаження… Якщо цей текст не зникає, браузер блокує скрипти — зверніться до дослідника.</p></div>
+<!-- Макет від 04.11.2026 · застосунок v2.0 · панель оператора: Ctrl+Shift+O або 5 натискань у лівий верхній кут -->
+<script id="tp-config" type="application/json">{"endpoint": "https://script.google.com/macros/s/AKfycbyM-ia2Bdw9ZCgA-MzGNjsQ-wryHLgZCZ7L56VKLyOu8krWXEex0dQYwfWIKdYo8gNS/exec", "mode": "local_sync", "station_id": "", "operator_pin": "", "poll_sec": 20, "fullscreen": false, "cfg_version": 1762633000000}</script>
+
+<script>
+/* «Дослідження вибору платіжних засобів» · макет від 04.11.2026 · застосунок v2.0
+   Лише ES5 (працює в Internet Explorer 11, старих Android/iOS і сучасних браузерах). */
+(function () {
+'use strict';
+var INITIAL_HTML = '<!DOCTYPE html>\n<!-- saved from url=(0014)about:internet -->\n' + document.documentElement.outerHTML;
+var APP_VERSION = '2.0';
+var DESIGN_VERSION = '2026-11-04';
+
+// ------------------------------------------------------------------ polyfills (IE11)
+if (typeof Object.assign !== 'function') {
+  Object.assign = function (t) { for (var i = 1; i < arguments.length; i++) { var s = arguments[i]; if (s) for (var k in s) if (Object.prototype.hasOwnProperty.call(s, k)) t[k] = s[k]; } return t; };
+}
+var imul = Math.imul || function (a, b) { var ah = (a >>> 16) & 0xffff, al = a & 0xffff, bh = (b >>> 16) & 0xffff, bl = b & 0xffff; return ((al * bl) + (((ah * bl + al * bh) << 16) >>> 0) | 0); };
+function nowMs() { return (window.performance && performance.now) ? performance.now() : new Date().getTime(); }
+var raf = window.requestAnimationFrame || function (f) { return setTimeout(f, 16); };
+function removeEl(el) { if (el && el.parentNode) el.parentNode.removeChild(el); }
+
+// ------------------------------------------------------------------ ТЕКСТИ (макет 04.11.2026)
+var NAME = { cbdc: 'Гаманець CBDC', card: 'Банківська картка (смартфон)' };
+var LINK = { cbdc: 'Обрати: гаманець CBDC', card: 'Обрати: банківська картка' };
+var TRUST = [['trust_state', 'Державним установам, що надають електронні послуги'], ['trust_nbu', 'Національному банку України'], ['trust_bank', 'Банкам, послугами яких ви користуєтеся']];
+var PAY = [['pay_cash', 'Готівка'], ['pay_card', 'Банківська картка'], ['pay_phone', 'Смартфон'], ['pay_crypto', 'Криптовалюта']];
+var PRIO = [['prio_simple', 'Простота, зручність, зрозумілість'], ['prio_cost', 'Вартість здійснення трансакцій'], ['prio_privacy', 'Приватність, невідстежуваність трансакцій'], ['prio_offline', 'Можливість здійснення платежів офф-лайн']];
+var PRIV = [['priv_tx_protected', 'Мені важливо знати, чи захищені дані, в яких відображається історія та зміст моїх трансакцій.'],
+            ['trust_nbu_privacy', 'Я довіряю Національному банку України у питаннях захисту даних про мої платежі.'],
+            ['trust_bank_privacy', 'Я довіряю банкам у питаннях захисту даних про мої платежі.'],
+            ['attn_item', 'Будь ласка, оберіть «2» у цьому рядку – це перевірка уважності.'],
+            ['trust_ps_privacy', 'Я довіряю платіжним системам у питаннях захисту даних про мої платежі.'],
+            ['priv_financial', 'Мені важливо мати змогу обмежувати доступ сторонніх до відомостей про мої платежі.'],
+            ['cbi_privacy', 'Незалежність Національного банку України від уряду важлива для захисту даних про мої платежі.']];
+var AWARE = [['aware', 'Чув(-ла) і маю уявлення'], ['heard', 'Чув(-ла), але не знаю подробиць'], ['no', 'Не чув(-ла)']];
+var BELIEFS = [['belief_privacy', 'На мою думку CBDC краще захищає приватність'], ['belief_convenience', 'На мою думку CBDC є більш зручним'], ['belief_cost', 'На мою думку CBDC є більш дешевим при використанні']];
+var CMP = [['вартість', 'безкоштовно', 'платне обслуговування на боці продавця + оплата окремих послуг (% комісії за перекази, sms інформування тощо)'],
+           ['захист даних', 'забезпечується block-chain центробанку', 'кіберстійкістю банків та платіжної системи'],
+           ['функціональність', 'офф-лайн трансакції, але можливі обмеження на величину гаманця', 'офф-лайн відсутній, обмежень на залишок немає, можливі обмеження на обсяг трансакцій за період часу'],
+           ['приватність', 'забезпечується block-chain центробанку і визначається дизайном платіжного інструменту. Як правило центробанки не проводять первинну ідентифікацію клієнтів.', 'забезпечується законодавчими обмеженнями на поширення даних і не визначається дизайном платіжного інструменту']];
+var PREF = [['card', 'Банківській картці'], ['cbdc', 'Гаманець CBDC'], ['cash', 'Готівка'], ['crypto', 'Криптовалюта']];
+var AI_TEXT = {
+  A: 'Так, приватність CBDC забезпечується на рівні дизайну. Наприклад, центробанки, як правило, не здійснюють клієнтських операцій, а початкова верифікація клієнтів відбувається в банках. Відповідно, цифрова ідентифікація транзакції і персональна ідентифікація особи, яка її здійснює, по-різному відображаються в блокчейні центробанку.',
+  B: 'Незважаючи на активні пошуки технічного рішення, яке б гарантувало приватність користувачів CBDC, остаточне твердження про безумовне невідстеження транзакції та неідентифікацію клієнта є досить оптимістичним. Різні моделі дизайну CBDC допускають різний спектр здатності до відстеження транзакцій в блокчейні центробанку.'
+};
+var DEBRIEF = '<p>Ми перевіряємо, як оформлення екрана впливає на фінансовий вибір і на те, чи помічають люди цей вплив. Учасники випадково потрапляли в одну з двох умов. В одній обидва варіанти подавали однаково. В іншій один із варіантів навмисно робили помітнішим, обмежували час на рішення або формулювали запитання заплутано – це відомі прийоми, які в дослідженнях називають темними паттернами. Який саме варіант підсилювали, теж визначав випадок: у частини учасників – гаманець CBDC е-гривні, у частини – банківську картку.</p>' +
+  '<p>У цьому дослідженні жодного реального рахунку чи гаманця не відкрито. Показані умови вигадані: вони не описують чинних продуктів і не підтверджують намірів НБУ, банків або будь-якої іншої установи застосовувати таке оформлення.</p>' +
+  '<p>Просимо, якщо можливо, не обговорювати конкретні екрани з майбутніми учасниками до завершення збору даних. Це прохання добровільне.</p>';
+var MSG = {
+  C1: 'Дякуємо. Участь не розпочато, відповіді не збиралися.',
+  C2: 'Будь ласка, дайте відповідь на всі запитання на цій сторінці.',
+  C6: 'Відповіді збережено. Дякуємо!',
+  C8: 'Припинити участь і відкликати відповіді? Їх не буде використано в дослідженні.',
+  C9: 'Ваші відповіді відкликано. Їх не буде використано. За бажанням можна прочитати пояснення мети.',
+  C10: 'Дослідження призупинено через повітряну тривогу. Будь ласка, пройдіть в укриття. До продовження можна відкликати вже надані відповіді, повідомивши дослідника.',
+  C11: 'Виникла технічна проблема. Будь ласка, зверніться до дослідника.',
+  C12: 'Попереднє проходження було перервано. Ви можете продовжити з місця переривання – уже збережені відповіді залишаються без змін – або припинити участь.'
+};
+// 24 слоти блоку: N (12) / M-anti (6) / M-pro (6), кожен навпіл з варіантом відповіді ШІ A/B
+var SLOTS = (function () { var s = [], i; for (i = 0; i < 6; i++) { s.push(['N', '', 'A']); s.push(['N', '', 'B']); } for (i = 0; i < 3; i++) { s.push(['M', 'anti', 'A']); s.push(['M', 'anti', 'B']); s.push(['M', 'pro', 'A']); s.push(['M', 'pro', 'B']); } return s; })();
+var URGENCY_SEC = 180, TRANSITION_MS = 500, AI_WAIT_MS = 2500;
+// лише для перевірки: ?urg=секунд&aiwait=мс (на учасників не впливає — параметрів у звичайному посиланні немає)
+var FLOW = ['s1', 's2', 's3', 's4a', 's4b', 's4c', 's5', 'sB1', 'sB2', 'assign', 's6', 's7', 's8', 's9', 's11q', 's11a', 's12', 's15'];
+
+// ------------------------------------------------------------------ утиліти
+function $(sel, root) { return (root || document).querySelector(sel); }
+function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+function esc(s) { return s == null ? '' : String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function nowIso() { return new Date().toISOString(); }
+function clone(o) { return JSON.parse(JSON.stringify(o)); }
+function on(el, ev, fn) { if (el) el.addEventListener(ev, fn, false); }
+function cryptoObj() { return window.crypto || window.msCrypto || null; }
+function randU32() { var c = cryptoObj(); if (c && c.getRandomValues) { var a = new Uint32Array(1); c.getRandomValues(a); return a[0]; } return Math.floor(Math.random() * 4294967296); }
+function randUnit() { return randU32() / 4294967296; }
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = imul(a ^ a >>> 15, 1 | a); t = t + imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function shuffle(arr, rng) { var a = arr.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rng() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function code(n) { var c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s = ''; for (var i = 0; i < n; i++) s += c.charAt(randU32() % c.length); return s; }
+function isNum(v) { return typeof v === 'number' && isFinite(v); }
+function keys(arr) { return arr.map(function (x) { return x[0]; }); }
+function lookup(arr) { var m = {}; arr.forEach(function (x) { m[x[0]] = x[1]; }); return m; }
+function contains(arr, v) { return arr.indexOf(v) >= 0; }
+function qs(name) { var m = new RegExp('[?&]' + name + '=([^&#]*)').exec(location.search); return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; }
+
+// ------------------------------------------------------------------ сховище
+var MEM = {};
+var LS_OK = (function () { try { var ls = window.localStorage; if (!ls) return false; ls.setItem('__tp', '1'); ls.removeItem('__tp'); return true; } catch (e) { return false; } })();
+function lsGet(k) { if (LS_OK) { try { var v = localStorage.getItem(k); return v == null ? null : JSON.parse(v); } catch (e) {} } return MEM.hasOwnProperty(k) ? clone(MEM[k]) : null; }
+function lsSet(k, v) { MEM[k] = clone(v); if (!LS_OK) return true; try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+function lsDel(k) { delete MEM[k]; if (LS_OK) { try { localStorage.removeItem(k); } catch (e) {} } }
+
+// ------------------------------------------------------------------ налаштування
+var GS = !!(window.google && google.script && google.script.run); // відкрито за посиланням з Apps Script
+var EMBED = {}; try { EMBED = JSON.parse(($('#tp-config') || {}).textContent || '{}'); } catch (e) {}
+var LOCALSET = lsGet('tp2.settings') || {};
+var SETTINGS = Object.assign({ endpoint: '', mode: 'auto', station_id: '', operator_pin: '2468', poll_sec: 15, fullscreen: true, cfg_version: 0 }, EMBED, LOCALSET);
+if ((EMBED.cfg_version || 0) > (LOCALSET.cfg_version || 0)) Object.assign(SETTINGS, EMBED, { station_id: LOCALSET.station_id || '' });
+['endpoint', 'mode', 'station_id'].forEach(function (k) { var v = qs(k); if (v) SETTINGS[k] = v; });
+if (qs('urg')) URGENCY_SEC = parseFloat(qs('urg')); if (qs('aiwait')) AI_WAIT_MS = parseInt(qs('aiwait'), 10);
+var ONLINE = GS || /^https?:/.test(location.protocol);
+if (!SETTINGS.station_id) { SETTINGS.station_id = (ONLINE ? 'WEB-' : 'ST-') + code(4); saveSettings(); }
+// Публічна версія (GitHub): PIN у файлі не зберігається — його перевіряє лише сервер.
+var ENTERED_PIN = '';
+function opPin() { return ENTERED_PIN || SETTINGS.operator_pin; }
+function saveSettings() { lsSet('tp2.settings', SETTINGS); }
+function hasCloud() { return GS || !!SETTINGS.endpoint; }
+function mode() { if (SETTINGS.mode && SETTINGS.mode !== 'auto') return SETTINGS.mode; return hasCloud() ? 'local_sync' : 'local'; }
+function cloudOn() { return hasCloud() && mode() !== 'local'; }
+
+// ------------------------------------------------------------------ мережа (XHR або google.script.run) — без fetch і Promise
+function post(body, timeoutMs, cb) {
+  var done = false;
+  function finish(err, res) { if (done) return; done = true; clearTimeout(t); cb(err, res); }
+  var t = setTimeout(function () { finish(new Error('timeout')); }, timeoutMs || 15000);
+  if (GS) {
+    google.script.run.withSuccessHandler(function (r) { try { r = typeof r === 'string' ? JSON.parse(r) : r; } catch (e) { return finish(e); } if (r && r.ok) finish(null, r); else finish(new Error((r && r.error) || 'bad_response')); })
+      .withFailureHandler(function (e) { finish(e || new Error('gs_failure')); }).api(JSON.stringify(body));
+    return;
+  }
+  if (!SETTINGS.endpoint) return finish(new Error('no_endpoint'));
+  var x;
+  try {
+    x = new XMLHttpRequest();
+    x.open('POST', SETTINGS.endpoint, true);
+    x.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+    x.onreadystatechange = function () {
+      if (x.readyState !== 4) return;
+      if (x.status >= 200 && x.status < 300) {
+        var r; try { r = JSON.parse(x.responseText); } catch (e) { return finish(new Error('bad_json')); }
+        if (r && r.ok) finish(null, r); else finish(new Error((r && r.error) || 'bad_response'));
+      } else finish(new Error('http_' + x.status));
+    };
+    x.send(JSON.stringify(body));
+  } catch (e) { finish(e); }
+}
+
+// ------------------------------------------------------------------ сесії
+function index() { return lsGet('tp2.index') || []; }
+function getLocal(id) { return lsGet('tp2.s.' + id); }
+function putLocal(s) { var ok = lsSet('tp2.s.' + s.session_id, s); var i = index(); if (!contains(i, s.session_id)) { i.push(s.session_id); lsSet('tp2.index', i); } return ok; }
+function allLocal() { return index().map(getLocal).filter(function (x) { return !!x; }); }
+function syncMap() { return lsGet('tp2.sync') || {}; }
+function markSynced(id, rev) { var m = syncMap(); m[id] = Math.max(m[id] || 0, rev); lsSet('tp2.sync', m); lsSet('tp2.lastsync', nowIso()); }
+function unsynced() { var m = syncMap(); return allLocal().filter(function (s) { return (m[s.session_id] || 0) < s.rev; }); }
+
+function persist(s, cb) {
+  s.rev = (s.rev || 0) + 1; s.updated_at = nowIso();
+  var localOk = putLocal(s);
+  if (mode() === 'cloud_strict') {
+    var snap = clone(s);
+    post({ action: 'save', session: snap, flat: flat(snap) }, 20000, function (err) {
+      if (err) { if (window.console) console.warn('save failed', err); return cb(false); }
+      markSynced(snap.session_id, snap.rev); cb(true);
+    });
+    return;
+  }
+  if (cloudOn()) setTimeout(syncNow, 50);
+  cb(localOk || !LS_OK);
+}
+var SYNCING = false;
+function syncNow(done) {
+  if (SYNCING || !cloudOn()) { if (done) done(); return; }
+  var list = unsynced(); if (!list.length) { if (done) done(); return; }
+  SYNCING = true;
+  (function step(i) {
+    if (i >= list.length) { SYNCING = false; renderOpStatus(); if (done) done(); return; }
+    var s = list[i];
+    post({ action: 'save', session: s, flat: flat(s) }, 20000, function (err) {
+      if (err) { SYNCING = false; renderOpStatus(); if (done) done(); return; }
+      markSynced(s.session_id, s.rev); step(i + 1);
+    });
+  })(0);
+}
+function localAssign() {
+  var b = lsGet('tp2.localblock');
+  if (!b || !b.slots || b.pos >= b.slots.length) {
+    var n = (lsGet('tp2.localblockcount') || 0) + 1; lsSet('tp2.localblockcount', n);
+    b = { id: SETTINGS.station_id + '-L' + n, slots: shuffle(SLOTS, randUnit), pos: 0 };
+  }
+  var sl = b.slots[b.pos];
+  var a = { block_id: b.id, slot: b.pos + 1, arch: sl[0], dir: sl[1] || null, ai_variant: sl[2], source: 'local', assigned_at: nowIso() };
+  b.pos++; lsSet('tp2.localblock', b);
+  return a;
+}
+function doAssign(s, cb) {
+  if (s.assignment) return cb(null, s.assignment);
+  if (cloudOn()) {
+    post({ action: 'assign', session_id: s.session_id, station_id: SETTINGS.station_id }, mode() === 'cloud_strict' ? 20000 : 8000, function (err, r) {
+      if (!err && r && r.assignment) return cb(null, r.assignment);
+      if (mode() === 'cloud_strict') return cb(err || new Error('assign_failed'));
+      cb(null, localAssign());
+    });
+    return;
+  }
+  cb(null, localAssign());
+}
+
+// ------------------------------------------------------------------ активний час
+var ALARM_ON = false, ALARM_SRC = null, CLOCKS = [];
+function Clock() { this.acc = 0; this.since = null; this.running = false; }
+Clock.prototype.start = function () { this.running = true; this.resume(); };
+Clock.prototype.resume = function () { if (this.running && this.since === null && !document.hidden && !ALARM_ON && !OP) this.since = nowMs(); };
+Clock.prototype.pause = function () { if (this.since !== null) { this.acc += nowMs() - this.since; this.since = null; } };
+Clock.prototype.stop = function () { this.pause(); this.running = false; return Math.round(this.acc); };
+Clock.prototype.ms = function () { return Math.round(this.acc + (this.since !== null ? nowMs() - this.since : 0)); };
+function newClock() { var c = new Clock(); CLOCKS.push(c); return c; }
+function pauseAll() { CLOCKS.forEach(function (c) { c.pause(); }); }
+function resumeAll() { CLOCKS.forEach(function (c) { c.resume(); }); }
+on(document, 'visibilitychange', function () { if (document.hidden) pauseAll(); else resumeAll(); });
+
+// ------------------------------------------------------------------ стан і рендер
+var S = null, CUR = null, BUSY = false, OP = null, PREVIEW = false;
+var app = document.getElementById('app');
+
+function logFlow(screen, event, detail) {
+  if (!S || PREVIEW) return;
+  S.flow.push({ seq: S.flow.length + 1, screen: screen, event: event, at: nowIso(), active_ms: CUR && CUR.clock ? CUR.clock.ms() : null, detail: detail || '' });
+}
+function cleanup() { if (CUR && CUR.cleanup) CUR.cleanup(); if (CUR && CUR.clock) CUR.clock.stop(); CLOCKS = []; CUR = null; }
+function render(html, key, opts) {
+  opts = opts || {};
+  cleanup();
+  app.innerHTML = '<div class="page">' + html + '</div>' + (opts.stop ? '<div class="stop-wrap"><button class="stop" id="stop-btn" type="button">Припинити участь</button></div>' : '');
+  try { window.scrollTo(0, 0); } catch (e) {}
+  CUR = { key: key, clock: newClock(), cleanup: null };
+  on($('#stop-btn'), 'click', function () { showC8(); });
+  var c = CUR.clock; raf(function () { raf(function () { c.start(); }); });
+  if (S && key) logFlow(key, 'show', opts.detail);
+  return CUR;
+}
+function overlay(html, cls) {
+  var d = document.createElement('div'); d.className = 'ov ' + (cls || '');
+  d.innerHTML = '<div class="box" role="dialog" aria-modal="true">' + html + '</div>';
+  document.body.appendChild(d);
+  var f = d.querySelector('button, input'); if (f) try { f.focus(); } catch (e) {}
+  return d;
+}
+function showC2() { if (document.querySelector('.ov.c2')) return; var o = overlay('<p>' + MSG.C2 + '</p><div class="btn-row"><button class="btn" type="button">Повернутися</button></div>', 'c2'); on(o.querySelector('button'), 'click', function () { removeEl(o); }); if (CUR) logFlow(CUR.key, 'c2'); }
+var savingT = null;
+function savingOn() { clearTimeout(savingT); savingT = setTimeout(function () { if (!$('#saving')) { var d = document.createElement('div'); d.id = 'saving'; d.className = 'saving'; d.textContent = 'Збереження…'; document.body.appendChild(d); } }, 400); }
+function savingOff() { clearTimeout(savingT); removeEl($('#saving')); }
+
+function complete(key, mutate) {
+  if (BUSY || !S) return; BUSY = true;
+  var active = CUR && CUR.clock ? CUR.clock.stop() : null;
+  if (mutate) mutate(active);
+  if (!contains(S.saved, key)) S.saved.push(key);
+  logFlow(key, 'save');
+  savingOn();
+  persist(S, function (ok) { savingOff(); BUSY = false; if (!ok) return showC11(key); next(); });
+}
+function nextKey() { for (var i = 0; i < FLOW.length; i++) { var k = FLOW[i]; if (k === 'assign') { if (!S.assignment) return k; } else if (!contains(S.saved, k)) return k; } return null; }
+function next() {
+  if (!S) return SCREENS.s1();
+  var k = nextKey();
+  if (!k) return showC6();
+  if (k === 'assign') return runAssign();
+  SCREENS[k]();
+}
+function wasShown(screen) { for (var i = 0; i < S.flow.length; i++) if (S.flow[i].screen === screen && S.flow[i].event === 'show') return true; return false; }
+
+// ------------------------------------------------------------------ сесія
+function makeDraws(seed) {
+  var rng = mulberry32(seed), d = {};
+  d.trust_order = shuffle(keys(TRUST), rng);
+  d.pay_order = shuffle(keys(PAY), rng);
+  d.prio_order = shuffle(keys(PRIO), rng);
+  var p; do { p = shuffle(keys(PRIV), rng); } while (p[0] === 'attn_item' || p[p.length - 1] === 'attn_item');
+  d.priv_order = p;
+  d.pos_cbdc = rng() < 0.5 ? 'left' : 'right';
+  d.pref_order = shuffle(keys(PREF), rng);
+  d.final_order = shuffle(['cbdc', 'bank'], rng);
+  return d;
+}
+function newSession() {
+  var seed = randU32();
+  return { session_id: code(10), app_version: APP_VERSION, design_version: DESIGN_VERSION, station_id: SETTINGS.station_id, mode: mode(), hosted: GS ? 1 : 0,
+    created_at: nowIso(), updated_at: null, completed_at: null, status: 'in_progress', interruption_reason: '', use_prohibited: 0,
+    rand_seed: seed, draws: makeDraws(seed), assignment: null, saved: [], answers: {}, tasks: [], flow: [], rev: 0, alarm_count: 0, resumed: 0,
+    ua: (navigator.userAgent || '').slice(0, 200), screen_w: window.screen ? screen.width : null };
+}
+function setActive(id) { if (id) lsSet('tp2.active', id); else lsDel('tp2.active'); }
+function toStart() { S = null; setActive(null); SCREENS.s1(); }
+
+// ------------------------------------------------------------------ компоненти
+function radios(name, opts) { return opts.map(function (o) { return '<label class="opt"><input type="radio" name="' + name + '" value="' + esc(o[0]) + '"> ' + esc(o[1]) + '</label>'; }).join(''); }
+function scale(name, n) {
+  var h = '<div class="scale s' + n + '" role="radiogroup">';
+  for (var i = 1; i <= n; i++) h += '<span class="sc"><input type="radio" id="' + name + '_' + i + '" name="' + name + '" value="' + i + '" aria-label="' + i + '"><label for="' + name + '_' + i + '">' + i + '</label></span>';
+  return h + '</div>';
+}
+function anchors(n, l, r) { return '<div class="anchors s' + n + '"><span class="l">' + l + '</span><span class="r">' + r + '</span></div>'; }
+function val(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); if (!el) return null; return /^\d+$/.test(el.value) ? parseInt(el.value, 10) : el.value; }
+function wireOpts() {
+  $$('.opt input').forEach(function (inp) {
+    on(inp, 'change', function () { $$('input[name="' + inp.name + '"]').forEach(function (x) { var l = x.parentNode; if (x.checked) l.className = 'opt sel'; else l.className = 'opt'; }); });
+  });
+}
+function collect(names) { var v = {}; for (var i = 0; i < names.length; i++) { v[names[i]] = val(names[i]); if (v[names[i]] === null) return null; } return v; }
+function battery(items, order, n, l, r) {
+  var m = lookup(items);
+  return order.map(function (k) { return '<div class="row-item"><div class="lbl">' + esc(m[k]) + '</div>' + scale(k, n) + anchors(n, l, r) + '</div>'; }).join('');
+}
+var NEXT_BTN = '<div class="btn-row"><button class="btn" id="go" type="button">Далі</button></div>';
+
+// ------------------------------------------------------------------ ЕКРАНИ
+var SCREENS = {};
+
+SCREENS.s1 = function () {
+  S = null;
+  render('<h1>Дослідження вибору платіжних засобів</h1>' +
+    '<p>Запрошуємо вас узяти участь у дослідженні поведінкової лабораторії Західноукраїнського національного університету. Вам пропонується розглянути уявні платіжні ситуації та відповісти на запитання. Нас цікавлять ваші власні рішення; правильних відповідей немає, і ваші відповіді не впливають на оцінки чи навчання.</p>' +
+    '<p>Нас цікавить, наскільки респонденти зацікавлені у здійсненні платежів традиційними платіжними інструментами, наприклад, банківською карткою, чи альтернативними засобами, які поєднують сучасні технології та забезпеченість виконання транзакції функціональною спроможністю центрального банку, а не приватної платіжної системи.</p>' +
+    '<p>CBDC – цифрова валюта центрального банку – розглядається як альтернатива традиційним платіжним інструментам у вигляді карткових розрахунків. CBDC здебільшого спирається на технологію block-chain, ідентичну тій, на якій побудована екосистема криптовалют. Але CBDC можуть відрізнятися дизайном, зокрема тим, у який спосіб відбувається ідентифікація клієнта, і у який спосіб гарантується приватність його платіжної історії.</p>' +
+    '<p>В Україні також відбуваються тестування можливостей запровадження цифрової валюти. Е-гривня – цифрова форма гривні, по суті, вітчизняна CBDC, можливість використання якої досліджує Національний банк України.</p>' +
+    '<p>Деякі роз’яснення щодо даного опитування. Усі застосунки, умови та пропозиції в цьому дослідженні уявні. Ви не відкриваєте реальних рахунків і не витрачаєте власних коштів.</p>' +
+    '<p>Участь добровільна й триватиме приблизно 12 хвилин. Ми зберігаємо відповіді, час дій і випадковий код сесії. Ми не просимо імені, номера телефону, електронної адреси чи реквізитів рахунків. Ви можете припинити участь і відкликати відповіді будь-коли до завершення. Відмова не впливає на навчання чи передбачену винагороду.</p>' +
+    '<label class="check"><input type="checkbox" id="c18"> Мені виповнилося 18 років.</label>' +
+    '<label class="check"><input type="checkbox" id="cons"> Я прочитав(-ла) умови й добровільно погоджуюся взяти участь.</label>' +
+    '<div class="btn-row"><button class="btn" id="go" type="button" disabled>Розпочати</button><button class="btn secondary" id="no" type="button">Не брати участі</button></div>', null);
+  var c18 = $('#c18'), cons = $('#cons'), go = $('#go');
+  function upd() { go.disabled = !(c18.checked && cons.checked); }
+  on(c18, 'click', upd); on(cons, 'click', upd); on(c18, 'change', upd); on(cons, 'change', upd);
+  on(go, 'click', function () {
+    if (go.disabled || BUSY || S) return;
+    S = newSession(); S.answers.age18_confirmed = 1; S.answers.consent = 1;
+    setActive(S.session_id); CUR.key = 's1'; logFlow('s1', 'start');
+    if (SETTINGS.fullscreen && !GS) requestFs();
+    complete('s1');
+  });
+  on($('#no'), 'click', function () {
+    lsSet('tp2.declined', (lsGet('tp2.declined') || 0) + 1);
+    if (cloudOn()) post({ action: 'declined' }, 8000, function () {});
+    render('<div style="text-align:center;padding-top:15vh"><p>' + MSG.C1 + '</p><div class="btn-row"><button class="btn" id="cl" type="button">Закрити</button></div></div>', null);
+    on($('#cl'), 'click', function () { SCREENS.s1(); });
+  });
+};
+function requestFs() { var d = document.documentElement, f = d.requestFullscreen || d.msRequestFullscreen || d.webkitRequestFullscreen; if (f && !(document.fullscreenElement || document.msFullscreenElement || document.webkitFullscreenElement)) { try { var r = f.call(d); if (r && r['catch']) r['catch'](function () {}); } catch (e) {} } }
+
+SCREENS.s2 = function () {
+  render('<h1>Як відповідати</h1><p class="lead">Вам пропонуються уявні ситуації. Обирайте так, як вчинили б у житті. Повернутися до завершеної сторінки не можна. Читайте умови перед переходом далі.</p>' +
+    '<div class="btn-row"><button class="btn" id="go" type="button">Почати</button></div>', 's2', { stop: true });
+  on($('#go'), 'click', function () { complete('s2', function (ms) { S.answers.rt_instr = ms; }); });
+};
+
+SCREENS.s3 = function () {
+  render('<h1>Наскільки ви довіряєте кожній із цих установ?</h1>' + battery(TRUST, S.draws.trust_order, 10, '1 – Зовсім не довіряю', '10 – Повністю довіряю') + NEXT_BTN, 's3', { stop: true });
+  on($('#go'), 'click', function () {
+    var v = collect(keys(TRUST)); if (!v) return showC2();
+    complete('s3', function (ms) { Object.assign(S.answers, v); S.answers.rt_s3 = ms; });
+  });
+};
+
+SCREENS.s4a = function () {
+  render('<p class="counter">Сторінка 4 · частина 1 з 3</p><h1>У який спосіб Ви віддаєте перевагу здійснювати щоденні платежі?</h1>' +
+    '<p class="muted small">Оцініть кожен спосіб: 1 – зовсім не віддаю переваги, 10 – повністю віддаю перевагу.</p>' +
+    battery(PAY, S.draws.pay_order, 10, '1 – Зовсім не віддаю переваги', '10 – Повністю віддаю перевагу') + NEXT_BTN, 's4a', { stop: true });
+  on($('#go'), 'click', function () {
+    var v = collect(keys(PAY)); if (!v) return showC2();
+    complete('s4a', function (ms) { Object.assign(S.answers, v); S.answers.rt_s4a = ms; });
+  });
+};
+
+SCREENS.s4b = function () {
+  render('<p class="counter">Сторінка 4 · частина 2 з 3</p><h1>Що для Вас є пріоритетним при виборі платіжного засобу?</h1>' +
+    battery(PRIO, S.draws.prio_order, 10, '1 – Зовсім не пріоритетно', '10 – Найвищий пріоритет') + NEXT_BTN, 's4b', { stop: true });
+  on($('#go'), 'click', function () {
+    var v = collect(keys(PRIO)); if (!v) return showC2();
+    complete('s4b', function (ms) { Object.assign(S.answers, v); S.answers.rt_s4b = ms; });
+  });
+};
+
+SCREENS.s4c = function () {
+  render('<p class="counter">Сторінка 4 · частина 3 з 3</p>' +
+    '<div class="q"><div class="q-title">Чи чули ви про CBDC до початку цього дослідження?</div>' + radios('cbdc_aware', AWARE) + '</div>' +
+    '<div class="q"><div class="q-title">Чи чули ви про е-гривню до початку цього дослідження?</div>' + radios('ehr_aware', AWARE) + '</div>' +
+    '<div class="q"><div class="q-title">Якщо е-гривня буде доступна, наскільки ймовірно, що ви почнете нею користуватися?</div>' + scale('intent_ehr', 7) + anchors(7, '1 – Дуже малоймовірно', '7 – Дуже ймовірно') + '</div>' + NEXT_BTN, 's4c', { stop: true });
+  wireOpts();
+  on($('#go'), 'click', function () {
+    var v = collect(['cbdc_aware', 'ehr_aware', 'intent_ehr']); if (!v) return showC2();
+    complete('s4c', function (ms) { Object.assign(S.answers, v); S.answers.rt_s4c = ms; });
+  });
+};
+
+SCREENS.s5 = function () {
+  var m = lookup(PRIV);
+  render('<h1>Наскільки ви погоджуєтеся з кожним твердженням?</h1><p class="lk-head">1 – «Зовсім не погоджуюся» · 4 – «І погоджуюся, і не погоджуюся» · 7 – «Повністю погоджуюся»</p>' +
+    S.draws.priv_order.map(function (k) { return '<div class="lk-row"><div class="stmt">' + esc(m[k]) + '</div>' + scale(k, 7) + '</div>'; }).join('') + NEXT_BTN, 's5', { stop: true });
+  on($('#go'), 'click', function () {
+    var v = collect(keys(PRIV)); if (!v) return showC2();
+    complete('s5', function (ms) { Object.assign(S.answers, v); S.answers.rt_s5 = ms; });
+  });
+};
+
+SCREENS.sB1 = function () {
+  render('<h1>Загальний порівняльний опис двох варіантів платіжних інструментів</h1>' +
+    '<table class="cmp"><thead><tr><th></th><th>CBDC</th><th>БАНКІВСЬКА КАРТКА (смартфон)</th></tr></thead><tbody>' +
+    CMP.map(function (r) { return '<tr><td class="k">' + esc(r[0]) + '</td><td><span class="hd">CBDC</span>' + esc(r[1]) + '</td><td><span class="hd">Банківська картка (смартфон)</span>' + esc(r[2]) + '</td></tr>'; }).join('') +
+    '</tbody></table>' + NEXT_BTN, 'sB1', { stop: true });
+  on($('#go'), 'click', function () { complete('sB1', function (ms) { S.answers.rt_info = ms; }); });
+};
+
+SCREENS.sB2 = function () {
+  render(BELIEFS.map(function (b) {
+    return '<div class="yn-row"><div class="t">' + esc(b[1]) + '</div><div class="yn" role="radiogroup">' +
+      '<label><input type="radio" name="' + b[0] + '" value="yes">так</label><label><input type="radio" name="' + b[0] + '" value="no">ні</label></div></div>';
+  }).join('') + NEXT_BTN, 'sB2', { stop: true });
+  $$('.yn input').forEach(function (inp) { on(inp, 'change', function () { $$('input[name="' + inp.name + '"]').forEach(function (x) { x.parentNode.className = x.checked ? 'on' : ''; }); }); });
+  on($('#go'), 'click', function () {
+    var v = collect(keys(BELIEFS)); if (!v) return showC2();
+    complete('sB2', function (ms) { Object.assign(S.answers, v); S.answers.rt_sB2 = ms; });
+  });
+};
+
+function runAssign() {
+  render('<div class="trans"><div class="dots"><span></span><span class="d2"></span><span class="d3"></span></div></div>', null);
+  if (BUSY) return; BUSY = true;
+  doAssign(S, function (err, a) {
+    if (err) { BUSY = false; return showC11('assign'); }
+    S.assignment = a; logFlow('assign', 'assigned', a.arch + (a.dir ? '/' + a.dir : '') + '/' + a.ai_variant + ' · ' + a.source);
+    persist(S, function (ok) { BUSY = false; if (!ok) return showC11('assign'); next(); });
+  });
+}
+
+// ---------- екрани 6–8
+function taskSpec(screen) {
+  var a = S.assignment, M = a.arch === 'M';
+  var enhanced = M ? (a.dir === 'pro' ? 'cbdc' : 'card') : null;
+  var pattern = null;
+  if (M && screen === 's7') pattern = 'dominance';
+  if (M && screen === 's8') pattern = 'urgency';
+  return { screen: screen, arch: a.arch, dir: M ? a.dir : null, pattern: pattern, enhanced: enhanced };
+}
+function renderTask(spec) {
+  var reexp = !PREVIEW && wasShown(spec.screen) ? 1 : 0;
+  var title = spec.screen === 's6' ? 'Оберіть платіжний інструмент з огляду на отриману Вами інформацію та Ваші вподобання' : 'Підтвердіть вибір платіжного інструменту';
+  var first = S.draws.pos_cbdc === 'left' ? 'cbdc' : 'card', second = first === 'cbdc' ? 'card' : 'cbdc';
+  var html = '', posCbdc = S.draws.pos_cbdc;
+  if (!spec.pattern) {
+    // таблиця: висоти комірок у рядку вирівнюються автоматично — кнопки завжди на одній висоті
+    html = '<table class="pair-t"><tr>' + [first, second].map(function (i) { return '<th class="opt-name">' + NAME[i] + '</th>'; }).join('') + '</tr><tr>' +
+      [first, second].map(function (i) { return '<td><button class="btn pick" type="button" data-choice="' + i + '">Обрати</button></td>'; }).join('') + '</tr></table>';
+  } else {
+    var enh = spec.enhanced, sup = enh === 'cbdc' ? 'card' : 'cbdc';
+    // макет: на екрані 7 підсилений ліворуч, на екрані 8 — праворуч. Пригнічений завжди першим у DOM (перший Tab).
+    var enhFirst = spec.screen === 's7';
+    posCbdc = (enh === 'cbdc') === enhFirst ? 'left' : 'right';
+    var supHtml = '<div class="opt-card sup ' + (enhFirst ? 'o2' : 'o1') + '"><div class="name">' + NAME[sup] + '</div><button class="linkbtn pick" type="button" data-choice="' + sup + '">' + LINK[sup] + '</button></div>';
+    var enhLabel = spec.pattern === 'urgency' ? LINK[enh] : 'Обрати';
+    var enhHtml = '<div class="opt-card enh ' + (enhFirst ? 'o1' : 'o2') + '"><div class="name">' + NAME[enh] + '</div><button class="btn pick" type="button" data-choice="' + enh + '">' + enhLabel + '</button></div>';
+    html = '<div class="pair dom">' + supHtml + enhHtml + '</div>';
+  }
+  var timer = spec.pattern === 'urgency' ? '<div id="timer-box" class="timer"><span class="digits" id="digits">03:00</span><span class="tlabel">До завершення пропозиції залишилося</span></div>' : '';
+  render(timer + '<div class="task-title">' + title + (spec.pattern === 'urgency' ? '.' : '') + '</div>' + html, spec.screen, { stop: true, detail: reexp ? 'reexposed' : '' });
+  var rec = { screen: spec.screen, arch: spec.arch, dir: spec.dir, pattern: spec.pattern, enhanced: spec.enhanced, pos_cbdc: posCbdc, choice: null, pattern_compliance: null, rt_ms: null,
+    timer_expired: spec.pattern === 'urgency' ? 0 : null, timer_restarted: spec.pattern === 'urgency' ? reexp : null, stimulus_reexposed: reexp, shown_at: nowIso(), answered_at: null };
+  if (!PREVIEW) putLocal(S); // фіксуємо факт показу (для stimulus_reexposed після збою)
+  var clock = CUR.clock, chosen = false;
+  function finish(choice) {
+    if (BUSY || chosen) return; chosen = true;
+    rec.choice = choice; rec.rt_ms = clock.ms(); rec.answered_at = nowIso();
+    rec.pattern_compliance = spec.pattern ? (choice === spec.enhanced ? 1 : 0) : null;
+    if (PREVIEW) { PREVIEW = false; S = null; return SCREENS.s1(); }
+    render('<div class="trans"><div class="dots"><span></span><span class="d2"></span><span class="d3"></span></div></div>', null);
+    BUSY = true;
+    setTimeout(function () {
+      BUSY = false;
+      complete(spec.screen, function () { S.tasks = S.tasks.filter(function (t) { return t.screen !== spec.screen; }); S.tasks.push(rec); });
+    }, TRANSITION_MS);
+  }
+  $$('.pick').forEach(function (b) { on(b, 'click', function () { finish(b.getAttribute('data-choice')); }); });
+  if (spec.pattern === 'urgency') {
+    var limit = URGENCY_SEC * 1000;
+    var iv = setInterval(function () {
+      var digits = $('#digits'); if (!digits) { clearInterval(iv); return; }
+      var rem = limit - clock.ms();
+      if (rem <= 0) {
+        clearInterval(iv); rec.timer_expired = 1; logFlow(spec.screen, 'timer_expired');
+        var tb = $('#timer-box'); if (tb) { tb.className = 'expired'; tb.innerHTML = 'Час пропозиції минув. Оберіть, будь ласка.'; }
+        return;
+      }
+      var sec = Math.ceil(rem / 1000); digits.textContent = pad2(Math.floor(sec / 60)) + ':' + pad2(sec % 60);
+    }, 200);
+    CUR.cleanup = function () { clearInterval(iv); };
+  }
+}
+SCREENS.s6 = function () { renderTask(taskSpec('s6')); };
+SCREENS.s7 = function () { renderTask(taskSpec('s7')); };
+SCREENS.s8 = function () { renderTask(taskSpec('s8')); };
+
+SCREENS.s9 = function () {
+  var m = lookup(PREF);
+  render('<h1>Якщо вам стане відомо про доступ до інформації про Ваші платежі, якому інструменту Ви віддаватимете перевагу?</h1>' +
+    radios('pref_access', S.draws.pref_order.map(function (k) { return [k, m[k]]; })) + NEXT_BTN, 's9', { stop: true });
+  wireOpts();
+  on($('#go'), 'click', function () {
+    var v = collect(['pref_access']); if (!v) return showC2();
+    complete('s9', function (ms) { Object.assign(S.answers, v); S.answers.rt_s9 = ms; });
+  });
+};
+
+SCREENS.s11q = function () {
+  render('<p class="ai-intro">Ви обираєте, чи користуватися CBDC, чи іншим платіжним засобом. Перед остаточним рішенням пропонуємо ознайомитися з відповіддю ШІ про захист приватності платежів.</p>' +
+    '<p class="muted">У запропонованій моделі гаманець CBDC обслуговує комерційний банк у своєму застосунку.</p>' +
+    '<div class="ai-q">«Як у цій моделі CBDC захищається приватність моїх платежів і хто може отримати доступ до даних про них?»</div>' +
+    '<button class="btn" id="send" type="button">Надіслати запит</button><p class="muted small">Запит уже сформульовано. Натисніть кнопку, щоб переглянути відповідь.</p>', 's11q', { stop: true });
+  on($('#send'), 'click', function () {
+    if (BUSY) return;
+    var rt = CUR.clock.ms();
+    render('<div class="wait"><div class="hourglass"></div><h2>Очікування відповіді</h2><div class="dots"><span></span><span class="d2"></span><span class="d3"></span></div></div>', null);
+    BUSY = true;
+    setTimeout(function () { BUSY = false; complete('s11q', function () { S.answers.rt_ai_send = rt; }); }, AI_WAIT_MS);
+  });
+};
+
+SCREENS.s11a = function () {
+  var v = S.assignment.ai_variant;
+  render('<div class="ai-answer"><div class="who">Відповідь ШІ</div>' + esc(AI_TEXT[v]) + '</div>' + NEXT_BTN, 's11a', { stop: true, detail: 'variant_' + v });
+  on($('#go'), 'click', function () { complete('s11a', function (ms) { S.answers.ai_variant = v; S.answers.rt_ai_read = ms; }); });
+};
+
+SCREENS.s12 = function () {
+  var L = { cbdc: 'Користуватися CBDC', bank: 'Користуватися звичайним банківським рахунком' };
+  render('<p class="lead">Ви повертаєтеся до попереднього сценарію вибору. Умови користування залишаються тими самими.</p><h2>Який варіант ви обираєте для здійснення щоденних платежів?</h2>' +
+    S.draws.final_order.map(function (k) { return '<button class="final-opt pick" type="button" data-choice="' + k + '">' + L[k] + '</button>'; }).join('') +
+    '<button class="linkbtn pick" type="button" data-choice="undecided">Поки не можу визначитися</button>', 's12', { stop: true });
+  var done = false;
+  $$('.pick').forEach(function (b) { on(b, 'click', function () { if (done || BUSY) return; done = true; var c = b.getAttribute('data-choice'); complete('s12', function (ms) { S.answers.final_choice = c; S.answers.rt_final = ms; }); }); });
+};
+
+SCREENS.s15 = function () {
+  render('<h1>Дякуємо за участь</h1>' + DEBRIEF + '<div class="btn-row"><button class="btn" id="fin" type="button">Завершити</button><button class="btn secondary" id="wd" type="button">Відкликати мої відповіді</button></div>', 's15');
+  on($('#wd'), 'click', function () { showC8(); });
+  on($('#fin'), 'click', function () { if (BUSY) return; S.status = 'completed'; S.completed_at = nowIso(); complete('s15'); });
+};
+
+// ------------------------------------------------------------------ службові стани
+function showC6() {
+  setActive(null);
+  render('<div style="text-align:center;padding-top:15vh"><p style="font-size:22px">' + MSG.C6 + '</p><div class="btn-row"><button class="btn" id="cl" type="button">Закрити</button></div></div>', null);
+  on($('#cl'), 'click', toStart);
+}
+function showC8() {
+  if (!S || BUSY || document.querySelector('.ov.c8')) return;
+  var o = overlay('<p>' + MSG.C8 + '</p><div class="btn-row"><button class="btn" id="yes" type="button">Так, відкликати</button><button class="btn secondary" id="back" type="button">Повернутися</button></div>', 'c8');
+  on($('#back', o), 'click', function () { removeEl(o); });
+  on($('#yes', o), 'click', function () { removeEl(o); withdraw(); });
+}
+function withdraw() {
+  if (BUSY || !S) return; BUSY = true;
+  if (CUR && CUR.clock) CUR.clock.stop();
+  var saw = contains(S.saved, 's6') || wasShown('s6');
+  var w = { session_id: S.session_id, app_version: S.app_version, design_version: S.design_version, station_id: S.station_id, mode: S.mode, hosted: S.hosted, created_at: S.created_at,
+    updated_at: null, completed_at: null, status: 'withdrawn', interruption_reason: '', use_prohibited: 1, withdrawn_at: nowIso(), withdrawn_after: CUR ? CUR.key : null,
+    rand_seed: S.rand_seed, draws: {}, assignment: S.assignment, saved: [], answers: {}, tasks: [], flow: [], rev: S.rev, alarm_count: S.alarm_count, resumed: S.resumed };
+  S = w;
+  persist(S, function (ok) {
+    BUSY = false; if (!ok) return showC11('withdraw');
+    setActive(null);
+    render('<div style="text-align:center;padding-top:12vh"><p>' + MSG.C9 + '</p><div class="btn-row">' + (saw ? '<button class="btn secondary" id="why" type="button">Пояснення мети</button>' : '') + '<button class="btn" id="cl" type="button">Закрити</button></div></div>', null);
+    on($('#cl'), 'click', toStart);
+    on($('#why'), 'click', function () { render('<h1>Пояснення мети</h1>' + DEBRIEF + '<div class="btn-row"><button class="btn" id="cl2" type="button">Закрити</button></div>', null); on($('#cl2'), 'click', toStart); });
+  });
+}
+var C11_CTX = null;
+function showC11(ctx) { C11_CTX = ctx; logFlow(ctx, 'c11'); pauseAll(); if (!$('#c11')) { var o = overlay('<p style="font-size:20px">' + MSG.C11 + '</p>', 'full'); o.id = 'c11'; } }
+function showC12(prev) {
+  render('<div style="padding-top:12vh"><p>' + MSG.C12 + '</p><div class="btn-row"><button class="btn" id="cont" type="button">Продовжити</button><button class="btn secondary" id="quit" type="button">Припинити участь</button></div></div>', null);
+  on($('#cont'), 'click', function () { S = prev; S.resumed = (S.resumed || 0) + 1; logFlow('c12', 'resume'); next(); });
+  on($('#quit'), 'click', function () { S = prev; showC8(); });
+}
+function alarmOn(src) {
+  if (ALARM_ON) return; ALARM_ON = true; pauseAll();
+  if (S) { S.alarm_count = (S.alarm_count || 0) + 1; logFlow(CUR ? CUR.key : null, 'alarm_on', src); }
+  var o = overlay('<p style="font-size:22px">' + MSG.C10 + '</p>', 'full'); o.id = 'c10';
+}
+function alarmOff(src) {
+  if (!ALARM_ON) return; ALARM_ON = false; removeEl($('#c10'));
+  if (S) logFlow(CUR ? CUR.key : null, 'alarm_off', src);
+  if (S && CUR && /^s[678]$/.test(CUR.key) && !contains(S.saved, CUR.key) && !BUSY) { SCREENS[CUR.key](); return; }
+  resumeAll();
+}
+var LAST_PING = null;
+function pollAlarm() {
+  if (!cloudOn()) return;
+  post({ action: 'status' }, 10000, function (err, r) {
+    if (err) { LAST_PING = { ok: false, at: nowIso() }; return; }
+    LAST_PING = { ok: true, at: nowIso() };
+    if (r.alarm) alarmOn('cloud'); else if (ALARM_ON && ALARM_SRC !== 'local') alarmOff('cloud');
+  });
+}
+
+// ------------------------------------------------------------------ похідні й експорт
+var ANSWER_VARS = ['age18_confirmed', 'consent', 'rt_instr'].concat(keys(TRUST), ['rt_s3'], keys(PAY), ['rt_s4a'], keys(PRIO), ['rt_s4b'], ['cbdc_aware', 'ehr_aware', 'intent_ehr', 'rt_s4c'],
+  keys(PRIV), ['rt_s5', 'rt_info'], keys(BELIEFS), ['rt_sB2', 'pref_access', 'rt_s9', 'rt_ai_send', 'ai_variant', 'rt_ai_read', 'final_choice', 'rt_final']);
+function flat(s) {
+  var a = s.answers || {}, as = s.assignment || {}, d = s.draws || {}, r = {};
+  r.session_id = s.session_id; r.station_id = s.station_id; r.app_version = s.app_version; r.design_version = s.design_version; r.mode = s.mode; r.hosted = s.hosted || 0;
+  r.status = s.status; r.interruption_reason = s.interruption_reason || null; r.use_prohibited = s.use_prohibited || 0;
+  r.created_at = s.created_at; r.completed_at = s.completed_at || null; r.updated_at = s.updated_at || null; r.rand_seed = s.rand_seed;
+  r.arch = as.arch || null; r.dir = as.dir || null; r.ai_variant_assigned = as.ai_variant || null; r.block_id = as.block_id == null ? null : as.block_id; r.slot = as.slot == null ? null : as.slot; r.assignment_source = as.source || null;
+  r.trust_order = d.trust_order ? d.trust_order.join('|') : null; r.pay_order = d.pay_order ? d.pay_order.join('|') : null; r.prio_order = d.prio_order ? d.prio_order.join('|') : null;
+  r.priv_order = d.priv_order ? d.priv_order.join('|') : null; r.pos_cbdc = d.pos_cbdc || null; r.pref_order = d.pref_order ? d.pref_order.join('|') : null; r.final_order = d.final_order ? d.final_order.join('|') : null;
+  ANSWER_VARS.forEach(function (k) { r[k] = a.hasOwnProperty(k) ? a[k] : null; });
+  var T = {}; (s.tasks || []).forEach(function (t) { T[t.screen] = t; });
+  ['s6', 's7', 's8'].forEach(function (k) { var t = T[k] || {};
+    r['choice_' + k] = t.choice || null; r['rt_' + k] = t.rt_ms == null ? null : t.rt_ms; r['pattern_' + k] = t.pattern || null;
+    r['compliance_' + k] = t.pattern_compliance == null ? null : t.pattern_compliance; r['pos_cbdc_' + k] = t.pos_cbdc || null; r['reexposed_' + k] = t.stimulus_reexposed == null ? null : t.stimulus_reexposed; });
+  r.timer_expired = T.s8 && T.s8.timer_expired != null ? T.s8.timer_expired : null;
+  r.switch_s7 = T.s6 && T.s7 ? (T.s7.choice !== T.s6.choice ? 1 : 0) : null;
+  r.switch_s8 = T.s7 && T.s8 ? (T.s8.choice !== T.s7.choice ? 1 : 0) : null;
+  r.final_matches_s8 = T.s8 && a.final_choice ? (a.final_choice === 'undecided' ? null : ((a.final_choice === 'cbdc') === (T.s8.choice === 'cbdc') ? 1 : 0)) : null;
+  r.attn_pass = a.attn_item == null ? null : (a.attn_item === 2 ? 1 : 0);
+  r.alarm_count = s.alarm_count || 0; r.resumed = s.resumed || 0; r.screens_saved = (s.saved || []).length;
+  return r;
+}
+var SESSION_COLS = Object.keys(flat({ answers: {}, draws: {}, tasks: [], saved: [] }));
+var TASK_COLS = ['session_id', 'station_id', 'status', 'arch', 'dir', 'ai_variant', 'screen', 'pattern', 'enhanced', 'pos_cbdc', 'choice', 'pattern_compliance', 'rt_ms', 'timer_expired', 'timer_restarted', 'stimulus_reexposed', 'shown_at', 'answered_at'];
+var FLOW_COLS = ['session_id', 'station_id', 'seq', 'screen', 'event', 'at', 'active_ms', 'detail'];
+function taskRows(list) { var rows = []; list.forEach(function (s) { (s.tasks || []).forEach(function (t) { rows.push(Object.assign({ session_id: s.session_id, station_id: s.station_id, status: s.status, ai_variant: (s.assignment || {}).ai_variant || null }, t)); }); }); return rows; }
+function flowRows(list) { var rows = []; list.forEach(function (s) { (s.flow || []).forEach(function (f) { rows.push(Object.assign({ session_id: s.session_id, station_id: s.station_id }, f)); }); }); return rows; }
+function csv(cols, rows, sep) {
+  function e(v) { if (v === null || v === undefined) return ''; v = String(v); return /[",;\r\n\t]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+  return '﻿' + [cols.map(e).join(sep)].concat(rows.map(function (r) { return cols.map(function (c) { return e(r[c]); }).join(sep); })).join('\r\n') + '\r\n';
+}
+function download(name, text, mime) {
+  var blob = new Blob([text], { type: mime });
+  if (window.navigator && navigator.msSaveOrOpenBlob) { navigator.msSaveOrOpenBlob(blob, name); return; }
+  var url = (window.URL || window.webkitURL).createObjectURL(blob);
+  var a = document.createElement('a'); a.href = url; a.download = name; a.style.display = 'none'; document.body.appendChild(a); a.click(); removeEl(a);
+  setTimeout(function () { (window.URL || window.webkitURL).revokeObjectURL(url); }, 2000);
+}
+function stamp() { var d = new Date(); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()) + '_' + pad2(d.getHours()) + pad2(d.getMinutes()); }
+function exportFiles(list, sep, tag) {
+  list = list.slice().sort(function (a, b) { return String(a.created_at) < String(b.created_at) ? -1 : 1; });
+  var base = 'cbdc_' + tag + '_' + stamp();
+  download(base + '_sessions.csv', csv(SESSION_COLS, list.map(flat), sep), 'text/csv;charset=utf-8');
+  setTimeout(function () { download(base + '_tasks.csv', csv(TASK_COLS, taskRows(list), sep), 'text/csv;charset=utf-8'); }, 400);
+  setTimeout(function () { download(base + '_flow.csv', csv(FLOW_COLS, flowRows(list), sep), 'text/csv;charset=utf-8'); }, 800);
+}
+function cellCounts(list) {
+  var c = {}; list.forEach(function (s) { if (s.status !== 'completed' || !s.assignment) return; var k = s.assignment.arch + (s.assignment.dir ? '-' + s.assignment.dir : '') + ' / ШІ ' + s.assignment.ai_variant; c[k] = (c[k] || 0) + 1; });
+  return c;
+}
+
+// ------------------------------------------------------------------ панель оператора
+function askPin(cb) {
+  if ($('#pin-box')) return;
+  var o = overlay('<h2>Панель оператора</h2><label for="pin">PIN</label><input id="pin" type="password" style="width:100%;padding:10px;border:1px solid #888;border-radius:6px;margin:8px 0"><div id="pin-err" class="err" style="display:none">Невірний PIN</div><div class="btn-row"><button class="btn" id="pin-ok" type="button">Увійти</button><button class="btn secondary" id="pin-cancel" type="button">Скасувати</button></div>');
+  o.id = 'pin-box';
+  var inp = $('#pin', o);
+  function ok() {
+    var v = inp.value;
+    if (!SETTINGS.operator_pin) { if (v) { ENTERED_PIN = v; removeEl(o); cb(); } return; }
+    if (v === String(SETTINGS.operator_pin)) { ENTERED_PIN = v; removeEl(o); cb(); } else { $('#pin-err', o).style.display = 'block'; inp.value = ''; }
+  }
+  on($('#pin-ok', o), 'click', ok); on(inp, 'keydown', function (e) { if (e.keyCode === 13) ok(); });
+  on($('#pin-cancel', o), 'click', function () { removeEl(o); });
+}
+function kv(rows) { return '<table class="kv">' + rows.map(function (r) { return '<tr><td class="k">' + r[0] + '</td><td>' + r[1] + '</td></tr>'; }).join('') + '</table>'; }
+function openOp() {
+  if (OP) return;
+  OP = document.createElement('div'); OP.className = 'op'; OP.id = 'op'; pauseAll();
+  OP.innerHTML = '<div class="wrap">' +
+    '<div class="sec"><h2 style="margin:0 0 6px">Панель оператора · <span id="op-st"></span></h2><button class="btn" id="op-close" type="button">Закрити панель</button></div>' +
+    '<div class="sec"><h3>Стан</h3><div id="op-status"></div><button class="btn secondary" id="op-sync" type="button">Синхронізувати зараз</button><button class="btn secondary" id="op-test" type="button">Перевірити з\'єднання</button><button class="btn secondary" id="op-fs" type="button">Повний екран</button><p class="small" id="op-msg"></p></div>' +
+    '<div class="sec"><h3>Поточна сесія</h3><div id="op-cur"></div><button class="btn secondary" id="op-retry" type="button">Повторити збереження (C11)</button><button class="btn secondary" id="op-interrupt" type="button">Перервати сесію (interrupted)</button><button class="btn secondary" id="op-new" type="button">До екрана 1 (новий учасник)</button></div>' +
+    '<div class="sec"><h3>Повітряна тривога (C10)</h3><p class="small">З хмарою — на всіх станціях (або в Таблиці: аркуш Control, B1 = TRUE/FALSE). Без хмари — лише на цій станції.</p><button class="btn" id="op-alarm-on" type="button" style="background:#b00020;border-color:#b00020">Увімкнути тривогу</button><button class="btn secondary" id="op-alarm-off" type="button">Вимкнути тривогу</button></div>' +
+    '<div class="sec"><h3>Дані</h3><div class="half"><label class="f" for="op-src">Джерело</label><select id="op-src"><option value="local">Ця станція</option><option value="cloud">Хмара (усі станції)</option></select></div><div class="half"><label class="f" for="op-sep">Роздільник CSV</label><select id="op-sep"><option value=",">Кома — pandas, STATA, JASP, Google Sheets</option><option value=";">Крапка з комою — Excel з укр. налаштуваннями</option></select></div>' +
+      '<button class="btn" id="op-export" type="button">sessions.csv + tasks.csv + flow.csv</button><button class="btn secondary" id="op-backup" type="button">Резервна копія JSON</button><button class="btn secondary" id="op-import" type="button">Імпорт JSON</button><input type="file" id="op-file" accept=".json" style="display:none"><div id="op-cells" class="small" style="margin-top:10px"></div></div>' +
+    '<div class="sec"><h3>Налаштування</h3><div class="half"><label class="f" for="op-station">ID станції</label><input type="text" id="op-station"></div><div class="half"><label class="f" for="op-mode">Режим</label><select id="op-mode"><option value="auto">Авто</option><option value="local_sync">Локально + автосинхронізація</option><option value="cloud_strict">Хмара — суворо (без локальної черги)</option><option value="local">Лише локально</option></select></div>' +
+      '<label class="f" for="op-endpoint">URL вебзастосунку Apps Script (…/exec)</label><input type="text" id="op-endpoint" placeholder="https://script.google.com/macros/s/…/exec">' +
+      '<div class="half"><label class="f" for="op-pin">PIN оператора</label><input type="text" id="op-pin"></div><div class="half"><label class="f">&nbsp;</label><label><input type="checkbox" id="op-fullscreen"> Повний екран на старті сесії</label></div>' +
+      '<button class="btn" id="op-save" type="button">Зберегти</button><button class="btn secondary" id="op-dl" type="button">Завантажити налаштований файл для інших ПК</button></div>' +
+    '<div class="sec"><h3>Перегляд екранів (без запису)</h3><div class="half"><label class="f" for="pv">Екран</label><select id="pv">' +
+      '<option value="s6|N|">6 — вибір (усі умови)</option><option value="s7|N|">7 — підтвердження, N</option><option value="s7|M|anti">7 — dominance, підсилено картку</option><option value="s7|M|pro">7 — dominance, підсилено CBDC</option>' +
+      '<option value="s8|N|">8 — підтвердження, N</option><option value="s8|M|anti">8 — таймер, підсилено картку</option><option value="s8|M|pro">8 — таймер, підсилено CBDC</option><option value="s11a|A|">11 — відповідь ШІ, варіант А</option><option value="s11a|B|">11 — відповідь ШІ, варіант Б</option></select></div>' +
+      '<div class="half"><label class="f" for="pv-pos">Позиція CBDC на нейтральних екранах</label><select id="pv-pos"><option value="left">ліворуч</option><option value="right">праворуч</option></select></div><button class="btn secondary" id="pv-go" type="button">Показати</button></div>' +
+    '<div class="sec"><h3>Підключення Google Таблиці (один раз)</h3><ol><li>Створіть Google Таблицю → <b>Розширення → Apps Script</b>.</li><li>У файл <b>Code.gs</b> вставте код нижче; змініть PIN у першому рядку на ваш.</li><li>Для телефонів: <b>Файли → + → HTML</b>, назва <b>Index</b>; вставте весь вміст цього HTML-файлу.</li><li><b>Розгорнути → Нове розгортання → Вебзастосунок</b>; виконувати як: <b>Я</b>; доступ: <b>Усі</b>.</li><li>URL …/exec — у поле вище (для ПК), «Зберегти», «Перевірити з\'єднання», «Завантажити налаштований файл». Цей самий URL — посилання для телефонів.</li></ol><textarea id="op-gas" readonly></textarea></div>' +
+    '</div>';
+  document.body.appendChild(OP);
+  $('#op-gas').value = ($('#gas-code') || {}).textContent || '';
+  fillOp(); renderOpStatus();
+  on($('#op-close'), 'click', closeOp);
+  on($('#op-sync'), 'click', function () { syncNow(renderOpStatus); });
+  on($('#op-test'), 'click', function () { var m = $('#op-msg'); m.textContent = 'Перевірка…'; post({ action: 'ping' }, 15000, function (err, r) { if (err) { LAST_PING = { ok: false, at: nowIso() }; m.innerHTML = '<span class="bad">Немає з\'єднання:</span> ' + esc(err.message || err); } else { LAST_PING = { ok: true, at: nowIso() }; m.innerHTML = '<span class="ok">З\'єднання є.</span> Сервер ' + esc(r.server_version) + ', тривога: ' + (r.alarm ? 'так' : 'ні'); } renderOpStatus(); }); });
+  on($('#op-fs'), 'click', requestFs);
+  on($('#op-retry'), 'click', function () {
+    if (!S) return;
+    savingOn(); persist(S, function (ok) { savingOff(); if (!ok) { $('#op-msg').innerHTML = '<span class="bad">Сервер знову не підтвердив.</span>'; return; } removeEl($('#c11')); closeOp(); if (C11_CTX === 'withdraw') toStart(); else next(); });
+  });
+  on($('#op-interrupt'), 'click', function () {
+    if (!S) return;
+    S.status = 'interrupted'; S.interruption_reason = ALARM_ON ? 'alarm' : ($('#c11') ? 'technical' : 'operator'); logFlow(CUR ? CUR.key : null, 'interrupted', S.interruption_reason);
+    removeEl($('#c11')); removeEl($('#c10')); ALARM_ON = false;
+    persist(S, function () { closeOp(); toStart(); });
+  });
+  on($('#op-new'), 'click', function () { $$('.ov').forEach(removeEl); ALARM_ON = false; S = null; closeOp(); SCREENS.s1(); });
+  on($('#op-alarm-on'), 'click', function () { if (cloudOn()) post({ action: 'setAlarm', on: true, pin: opPin() }, 15000, function (err) { ALARM_SRC = err ? 'local' : 'cloud'; closeOp(); alarmOn(ALARM_SRC); }); else { ALARM_SRC = 'local'; closeOp(); alarmOn('local'); } });
+  on($('#op-alarm-off'), 'click', function () { function off() { ALARM_SRC = null; closeOp(); alarmOff('operator'); } if (cloudOn()) post({ action: 'setAlarm', on: false, pin: opPin() }, 15000, off); else off(); });
+  on($('#op-export'), 'click', function () {
+    var sep = $('#op-sep').value, m = $('#op-msg');
+    if ($('#op-src').value === 'local') { exportFiles(allLocal(), sep, SETTINGS.station_id); m.textContent = 'Експортовано сесій: ' + allLocal().length; return; }
+    m.textContent = 'Завантаження з хмари…';
+    post({ action: 'export', pin: opPin() }, 60000, function (err, r) {
+      if (err) { m.innerHTML = '<span class="bad">Помилка:</span> ' + esc(err.message || err) + (String(err.message) === 'pin' ? ' — PIN не збігається з OPERATOR_PIN у Code.gs' : '') + (String(err.message) === 'pin_locked' ? ' — забагато невдалих спроб PIN; сервер заблокував вивантаження на годину' : ''); return; }
+      exportFiles(r.sessions, sep, 'all'); m.innerHTML = '<span class="ok">Експортовано сесій: ' + r.sessions.length + '</span>; відмов на екрані 1: ' + r.declined_count;
+      renderCells(r.sessions, 'хмара');
+    });
+  });
+  on($('#op-backup'), 'click', function () { download('cbdc_backup_' + SETTINGS.station_id + '_' + stamp() + '.json', JSON.stringify({ format: 'cbdc-backup', exported_at: nowIso(), station_id: SETTINGS.station_id, declined_count: lsGet('tp2.declined') || 0, sessions: allLocal() }), 'application/json'); });
+  on($('#op-import'), 'click', function () { $('#op-file').click(); });
+  on($('#op-file'), 'change', function (e) {
+    var f = e.target.files[0]; if (!f) return; var rd = new FileReader();
+    rd.onload = function () { try { var j = JSON.parse(rd.result), n = 0; (j.sessions || []).forEach(function (s) { if (!s.session_id) return; var ex = getLocal(s.session_id); if (!ex || (ex.rev || 0) < (s.rev || 0)) { putLocal(s); n++; } }); $('#op-msg').textContent = 'Імпортовано/оновлено сесій: ' + n; renderOpStatus(); if (cloudOn()) syncNow(); } catch (err) { $('#op-msg').textContent = 'Помилка JSON: ' + err.message; } };
+    rd.readAsText(f, 'utf-8');
+  });
+  on($('#op-save'), 'click', function () { readOp(); saveSettings(); $('#op-msg').innerHTML = '<span class="ok">Збережено.</span>'; renderOpStatus(); startPolling(); });
+  on($('#op-dl'), 'click', function () {
+    readOp(); SETTINGS.cfg_version = new Date().getTime(); saveSettings();
+    var cfg = { endpoint: SETTINGS.endpoint, mode: SETTINGS.mode, station_id: '', operator_pin: SETTINGS.operator_pin, poll_sec: SETTINGS.poll_sec, fullscreen: SETTINGS.fullscreen, cfg_version: SETTINGS.cfg_version };
+    var html = INITIAL_HTML.replace(/(<script id="tp-config" type="application\/json">)[\s\S]*?(<\/script>)/, function (m0, a, b) { return a + JSON.stringify(cfg).replace(/</g, '\\u003c') + b; });
+    download('cbdc_experiment.html', html, 'text/html;charset=utf-8');
+  });
+  on($('#pv-go'), 'click', function () { var p = $('#pv').value.split('|'), pos = $('#pv-pos').value; closeOp(); preview(p[0], p[1], p[2], pos); });
+}
+function fillOp() { $('#op-st').textContent = SETTINGS.station_id + (GS ? ' (відкрито за посиланням)' : ''); $('#op-station').value = SETTINGS.station_id; $('#op-mode').value = SETTINGS.mode || 'auto'; $('#op-endpoint').value = SETTINGS.endpoint || ''; $('#op-pin').value = SETTINGS.operator_pin; $('#op-fullscreen').checked = !!SETTINGS.fullscreen; }
+function readOp() { SETTINGS.station_id = $('#op-station').value.replace(/^\s+|\s+$/g, '') || SETTINGS.station_id; SETTINGS.mode = $('#op-mode').value; SETTINGS.endpoint = $('#op-endpoint').value.replace(/^\s+|\s+$/g, ''); SETTINGS.operator_pin = $('#op-pin').value.replace(/^\s+|\s+$/g, '') || SETTINGS.operator_pin; SETTINGS.fullscreen = $('#op-fullscreen').checked; }
+function renderCells(list, src) {
+  var c = cellCounts(list), ks = Object.keys(c).sort();
+  var el = $('#op-cells'); if (el) el.innerHTML = '<b>Завершені сесії за умовами (' + src + '):</b> ' + (ks.length ? ks.map(function (k) { return k + ': ' + c[k]; }).join(' · ') : 'ще немає');
+}
+function renderOpStatus() {
+  if (!OP) return;
+  var MODES = { local: 'Лише локально', local_sync: 'Локально + автосинхронізація', cloud_strict: 'Хмара — суворо' };
+  var all = allLocal(), un = unsynced();
+  $('#op-status').innerHTML = kv([
+    ['Режим', MODES[mode()] + (GS ? ' · через Apps Script' : '')],
+    ['Хмара', hasCloud() ? (LAST_PING ? (LAST_PING.ok ? '<span class="ok">на зв\'язку</span>' : '<span class="bad">немає зв\'язку</span>') : 'не перевірялась') : '<span class="bad">не налаштована</span>'],
+    ['Локальне сховище', LS_OK ? '<span class="ok">доступне</span>' : '<span class="bad">недоступне — дані лише в пам\'яті до закриття сторінки; потрібна хмара</span>'],
+    ['Сесій на станції', all.length + ' (завершено: ' + all.filter(function (s) { return s.status === 'completed'; }).length + ')'],
+    ['Не вивантажено', hasCloud() ? (un.length ? '<span class="bad">' + un.length + '</span>' : '<span class="ok">0</span>') : '—'],
+    ['Відмов на екрані 1', lsGet('tp2.declined') || 0], ['Тривога', ALARM_ON ? '<span class="bad">УВІМКНЕНА</span>' : 'вимкнена']]);
+  $('#op-cur').innerHTML = S ? kv([['session_id', esc(S.session_id)], ['Екран', CUR ? esc(CUR.key || '—') : '—'], ['Збережено екранів', S.saved.length], ['Умова', S.assignment ? esc(S.assignment.arch + (S.assignment.dir ? ' · ' + S.assignment.dir : '') + ' · ШІ ' + S.assignment.ai_variant + ' · ' + S.assignment.source) : 'ще не призначено'], ['C11', $('#c11') ? '<span class="bad">так</span>' : 'ні']]) : kv([['Активна сесія', 'немає']]);
+  renderCells(all, 'ця станція');
+}
+function closeOp() { removeEl(OP); OP = null; resumeAll(); }
+function preview(screen, a1, a2, pos) {
+  PREVIEW = true;
+  S = newSession(); S.draws.pos_cbdc = pos;
+  if (screen === 's11a') { S.assignment = { arch: 'N', ai_variant: a1 }; render('<div class="ai-answer"><div class="who">Відповідь ШІ (перегляд, варіант ' + a1 + ')</div>' + esc(AI_TEXT[a1]) + '</div><div class="btn-row"><button class="btn" id="go" type="button">Далі</button></div>', null); on($('#go'), 'click', function () { PREVIEW = false; S = null; SCREENS.s1(); }); return; }
+  S.assignment = { arch: a1, dir: a2 || null, ai_variant: 'A' };
+  renderTask(taskSpec(screen));
+  var sb = $('#stop-btn'); if (sb) { removeEl(sb); }
+}
+
+on(document, 'keydown', function (e) { if (e.ctrlKey && e.shiftKey && (e.keyCode === 79)) { if (e.preventDefault) e.preventDefault(); askPin(openOp); } });
+var corner = { n: 0, t: 0 };
+on(document, 'click', function (e) { var x = e.clientX, y = e.clientY; if (x < 70 && y < 70) { var n = new Date().getTime(); corner.n = n - corner.t < 900 ? corner.n + 1 : 1; corner.t = n; if (corner.n >= 5) { corner.n = 0; askPin(openOp); } } });
+
+try { if (history.pushState) { history.pushState({ tp: 1 }, '', location.href); window.addEventListener('popstate', function () { try { history.pushState({ tp: 1 }, '', location.href); } catch (e) {} }); } } catch (e) {}
+window.onbeforeunload = function (e) { if (S && S.status === 'in_progress' && !PREVIEW) { var m = 'Сесія триває.'; (e || window.event).returnValue = m; return m; } };
+
+var pollT = null;
+function startPolling() { clearInterval(pollT); if (cloudOn()) { pollAlarm(); pollT = setInterval(function () { pollAlarm(); syncNow(); }, Math.max(5, SETTINGS.poll_sec || 15) * 1000); } }
+
+(function init() {
+  var act = lsGet('tp2.active'), prev = act ? getLocal(act) : null;
+  if (prev && prev.status === 'in_progress' && prev.saved && prev.saved.length) showC12(prev);
+  else { setActive(null); SCREENS.s1(); }
+  startPolling();
+  window.TP = { version: APP_VERSION, flat: flat, makeDraws: makeDraws, state: function () { return S; }, screen: function () { return CUR ? CUR.key : null; }, busy: function () { return BUSY; },
+    settings: SETTINGS, setUrgency: function (x) { URGENCY_SEC = x; }, setAiWait: function (x) { AI_WAIT_MS = x; }, slots: SLOTS, cellCounts: cellCounts };
+})();
+})();
+
+</script>
+</body>
+</html>
