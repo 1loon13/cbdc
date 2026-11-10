@@ -27,6 +27,8 @@ p{margin:0 0 14px}
 .btn.secondary{background:#fff;color:#1d3a5f}
 .btn-row{margin-top:26px}
 .btn-row:after{content:"";display:table;clear:both}
+.fin-row #wd{float:left;margin-top:12px;font-size:16px}
+.fin-row #fin{float:right;margin:0}
 .stop-wrap{max-width:1000px;margin:-80px auto 0;padding:0 28px 30px;position:relative;z-index:2}
 .stop{background:none;border:none;color:#555;padding:8px 0;font-size:14px;text-decoration:underline}
 .check{display:block;margin:12px 0;cursor:pointer;padding-left:34px;position:relative}
@@ -99,8 +101,7 @@ p{margin:0 0 14px}
 .ai-intro{font-size:19px;color:#1d3a5f}
 .ai-q{background:#eef1f5;border:1px solid #c9d2dc;padding:16px 18px;font-weight:600;color:#1d3a5f;margin:18px 0 22px}
 .wait{text-align:center;padding-top:14vh}
-.hourglass{width:64px;height:96px;margin:0 auto 18px;border:4px solid #1d6a8a;border-radius:6px;position:relative;overflow:hidden}
-.hourglass:after{content:"";position:absolute;left:12px;right:12px;bottom:6px;height:22px;background:#1d6a8a;border-radius:4px 4px 0 0}
+.hourglass{display:block;width:64px;height:96px;margin:0 auto 18px}
 .dots span{display:inline-block;width:10px;height:10px;border-radius:50%;background:#bdbdbd;margin:0 6px;-webkit-animation:pl 1s infinite;animation:pl 1s infinite}
 .dots span.d2{-webkit-animation-delay:.15s;animation-delay:.15s}.dots span.d3{-webkit-animation-delay:.3s;animation-delay:.3s}
 @-webkit-keyframes pl{0%,100%{opacity:.25}50%{opacity:1}}
@@ -212,7 +213,7 @@ var AI_TEXT = {
   A: 'Так, приватність CBDC забезпечується на рівні дизайну. Наприклад, центробанки, як правило, не здійснюють клієнтських операцій, а початкова верифікація клієнтів відбувається в банках. Відповідно, цифрова ідентифікація транзакції і персональна ідентифікація особи, яка її здійснює, по-різному відображаються в блокчейні центробанку.',
   B: 'Незважаючи на активні пошуки технічного рішення, яке б гарантувало приватність користувачів CBDC, остаточне твердження про безумовне невідстеження транзакції та неідентифікацію клієнта є досить оптимістичним. Різні моделі дизайну CBDC допускають різний спектр здатності до відстеження транзакцій в блокчейні центробанку.'
 };
-var DEBRIEF = '<p>Ми перевіряємо, як оформлення екрана впливає на фінансовий вибір і на те, чи помічають люди цей вплив. Учасники випадково потрапляли в одну з двох умов. В одній обидва варіанти подавали однаково. В іншій один із варіантів навмисно робили помітнішим, обмежували час на рішення або формулювали запитання заплутано – це відомі прийоми, які в дослідженнях називають темними паттернами. Який саме варіант підсилювали, теж визначав випадок: у частини учасників – гаманець CBDC е-гривні, у частини – банківську картку.</p>' +
+var DEBRIEF = '<p>Ми перевіряємо, як оформлення екрана впливає на фінансовий вибір і на те, чи помічають люди цей вплив. Спершу обидва варіанти подавали однаково. Потім один із них – банківську картку – навмисно робили помітнішим, а на останньому кроці ще й обмежували час на рішення. Це відомі прийоми, які в дослідженнях називають темними паттернами. Відповідь ШІ, яку Ви бачили, визначав випадок: частина учасників отримувала відповідь, що приватність CBDC забезпечується дизайном, частина – що безумовну приватність не гарантовано. Обидві відповіді підготовлено для дослідження.</p>' +
   '<p>У цьому дослідженні жодного реального рахунку чи гаманця не відкрито. Показані умови вигадані: вони не описують чинних продуктів і не підтверджують намірів НБУ, банків або будь-якої іншої установи застосовувати таке оформлення.</p>' +
   '<p>Просимо, якщо можливо, не обговорювати конкретні екрани з майбутніми учасниками до завершення збору даних. Це прохання добровільне.</p>';
 // Службові повідомлення (у макеті не описані — мінімальні нейтральні тексти)
@@ -561,7 +562,7 @@ SCREENS.s11q = function () {
   on($('#send'), 'click', function () {
     if (BUSY) return;
     var rt = CUR.clock.ms();
-    render('<div class="wait"><div class="hourglass"></div><h2>Очікування відповіді</h2><div class="dots"><span></span><span class="d2"></span><span class="d3"></span></div></div>', null);
+    render('<div class="wait"><svg class="hourglass" width="64" height="96" viewBox="0 0 64 96" aria-hidden="true" focusable="false"><path d="M8 4H56V16C56 32 35 40 35 48C35 56 56 64 56 80V92H8V80C8 64 29 56 29 48C29 40 8 32 8 16Z" fill="none" stroke="#2a6f8f" stroke-width="4" stroke-linejoin="round"/><path d="M32 70L47 87H17Z" fill="#2a6f8f"/></svg><h2>Очікування відповіді</h2><div class="dots"><span></span><span class="d2"></span><span class="d3"></span></div></div>', null);
     BUSY = true;
     setTimeout(function () { BUSY = false; complete('s11q', function () { S.answers.rt_ai_send = rt; }); }, AI_WAIT_MS);
   });
@@ -579,7 +580,7 @@ SCREENS.s12 = function () {
   $$('.pick').forEach(function (b) { on(b, 'click', function () { if (done || BUSY) return; done = true; var c = b.getAttribute('data-choice'); complete('s12', function (ms) { S.answers.final_choice = c; S.answers.rt_final = ms; }); }); });
 };
 SCREENS.s15 = function () {
-  render('<h1>Дякуємо за участь</h1>' + DEBRIEF + '<div class="btn-row"><button class="btn" id="fin" type="button">Завершити</button><button class="btn secondary" id="wd" type="button">Відкликати мої відповіді</button></div>', 's15');
+  render('<h1>Дякуємо за участь</h1>' + DEBRIEF + '<div class="btn-row fin-row"><button class="linkbtn" id="wd" type="button">Відкликати мої відповіді</button><button class="btn" id="fin" type="button">Завершити</button></div>', 's15');
   on($('#wd'), 'click', function () { askStop(); });
   on($('#fin'), 'click', function () { if (BUSY) return; S.status = 'completed'; S.completed_at = nowIso(); complete('s15'); });
 };
