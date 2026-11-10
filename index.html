@@ -28,7 +28,7 @@ p{margin:0 0 14px}
 .btn-row{margin-top:26px}
 .btn-row:after{content:"";display:table;clear:both}
 .stop-wrap{max-width:1000px;margin:-80px auto 0;padding:0 28px 30px;position:relative;z-index:2}
-.stop{background:#fff;border:1px solid #767676;color:#333;border-radius:6px;padding:8px 14px;font-size:14px;text-decoration:underline}
+.stop{background:none;border:none;color:#555;padding:8px 0;font-size:14px;text-decoration:underline}
 .check{display:block;margin:12px 0;cursor:pointer;padding-left:34px;position:relative}
 .check input{position:absolute;left:0;top:1px;width:22px;height:22px;margin:0}
 .counter{font-size:15px;color:#555;margin-bottom:6px}
@@ -91,8 +91,8 @@ p{margin:0 0 14px}
 .pair.dom .o1{border-left:none}
 .pair.dom .o2{border-left:1px solid #bdbdbd}
 .linkbtn{background:none;border:none;padding:6px 2px;color:#5f5f5f;font-size:14px;text-decoration:underline;cursor:pointer}
-.timer{border:2px solid #c4161c;border-radius:8px;padding:10px 16px;margin-bottom:8px;color:#c4161c;background:#fff5f5}
-.timer .digits{font-family:Consolas,"Courier New",monospace;font-size:30px;font-weight:700;margin-right:12px;vertical-align:middle}
+.timer{margin:6px 0 8px;color:#111}
+.timer .digits{font-size:30px;font-weight:700;color:#b3122b;margin-right:12px;vertical-align:middle;font-variant-numeric:tabular-nums}
 .timer .tlabel{vertical-align:middle;font-size:15px}
 .expired{border:2px solid #8a4b00;background:#fff8ec;border-radius:8px;padding:12px 16px;margin-bottom:8px;font-weight:600;color:#6b3a00}
 /* ШІ */
@@ -109,6 +109,7 @@ p{margin:0 0 14px}
 .ai-answer .who{font-size:14px;color:#555;margin-bottom:8px;font-weight:600}
 .final-opt{display:block;width:100%;text-align:left;border:2px solid #1d3a5f;background:#fff;color:#1d3a5f;font-weight:700;padding:14px 16px;margin-bottom:14px;border-radius:4px;font-size:18px}
 .final-opt:hover{background:#eef3f8}
+.final-opt+.linkbtn{font-size:16px;color:#333;text-decoration:none;padding:6px 0}
 .trans{text-align:center;padding-top:28vh}
 /* оверлеї */
 .ov{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:50;overflow:auto;padding:20px}
@@ -168,36 +169,34 @@ p{margin:0 0 14px}
 <body>
 <noscript><p style="padding:40px;font-size:20px">Для роботи потрібно увімкнути JavaScript. Зверніться до дослідника.</p></noscript>
 <div id="app" aria-live="polite"><p style="padding:40px;font-size:18px">Завантаження… Якщо цей текст не зникає, браузер блокує скрипти — зверніться до дослідника.</p></div>
-<!-- Макет від 04.11.2026 · застосунок v2.0 · панель оператора: Ctrl+Shift+O або 5 натискань у лівий верхній кут -->
-<script id="tp-config" type="application/json">{"endpoint": "https://script.google.com/macros/s/AKfycbyM-ia2Bdw9ZCgA-MzGNjsQ-wryHLgZCZ7L56VKLyOu8krWXEex0dQYwfWIKdYo8gNS/exec", "mode": "local_sync", "station_id": "", "operator_pin": "", "poll_sec": 20, "fullscreen": false, "cfg_version": 1762633000000}</script>
+<!-- Макет від 04.11.2026 · застосунок v3.0 (строго за макетом) · панель оператора: Ctrl+Shift+O або 5 натискань у лівий верхній кут -->
+<script id="tp-config" type="application/json">{"endpoint": "https://script.google.com/macros/s/AKfycbyM-ia2Bdw9ZCgA-MzGNjsQ-wryHLgZCZ7L56VKLyOu8krWXEex0dQYwfWIKdYo8gNS/exec", "mode": "local_sync", "station_id": "", "operator_pin": "", "cfg_version": 1762790000000}</script>
 
 <script>
-/* «Дослідження вибору платіжних засобів» · макет від 04.11.2026 · застосунок v2.0
+/* «Дослідження вибору платіжних засобів» · строго за макетом від 04.11.2026 · застосунок v3.0
    Лише ES5 (працює в Internet Explorer 11, старих Android/iOS і сучасних браузерах). */
 (function () {
 'use strict';
 var INITIAL_HTML = '<!DOCTYPE html>\n<!-- saved from url=(0014)about:internet -->\n' + document.documentElement.outerHTML;
-var APP_VERSION = '2.0';
+var APP_VERSION = '3.0';
 var DESIGN_VERSION = '2026-11-04';
 
 // ------------------------------------------------------------------ polyfills (IE11)
 if (typeof Object.assign !== 'function') {
   Object.assign = function (t) { for (var i = 1; i < arguments.length; i++) { var s = arguments[i]; if (s) for (var k in s) if (Object.prototype.hasOwnProperty.call(s, k)) t[k] = s[k]; } return t; };
 }
-var imul = Math.imul || function (a, b) { var ah = (a >>> 16) & 0xffff, al = a & 0xffff, bh = (b >>> 16) & 0xffff, bl = b & 0xffff; return ((al * bl) + (((ah * bl + al * bh) << 16) >>> 0) | 0); };
 function nowMs() { return (window.performance && performance.now) ? performance.now() : new Date().getTime(); }
 var raf = window.requestAnimationFrame || function (f) { return setTimeout(f, 16); };
 function removeEl(el) { if (el && el.parentNode) el.parentNode.removeChild(el); }
 
-// ------------------------------------------------------------------ ТЕКСТИ (макет 04.11.2026)
+// ------------------------------------------------------------------ ТЕКСТИ — дослівно з макета від 04.11.2026
 var NAME = { cbdc: 'Гаманець CBDC', card: 'Банківська картка (смартфон)' };
-var LINK = { cbdc: 'Обрати: гаманець CBDC', card: 'Обрати: банківська картка' };
 var TRUST = [['trust_state', 'Державним установам, що надають електронні послуги'], ['trust_nbu', 'Національному банку України'], ['trust_bank', 'Банкам, послугами яких ви користуєтеся']];
 var PAY = [['pay_cash', 'Готівка'], ['pay_card', 'Банківська картка'], ['pay_phone', 'Смартфон'], ['pay_crypto', 'Криптовалюта']];
 var PRIO = [['prio_simple', 'Простота, зручність, зрозумілість'], ['prio_cost', 'Вартість здійснення трансакцій'], ['prio_privacy', 'Приватність, невідстежуваність трансакцій'], ['prio_offline', 'Можливість здійснення платежів офф-лайн']];
-var PRIV = [['priv_tx_protected', 'Мені важливо знати, чи захищені дані, в яких відображається історія та зміст моїх трансакцій.'],
+var PRIV = [['priv_tx_protected', 'Мені важливо знати, чи захищені дані, в яких відображається історія та зміст моїх трансакцій'],
             ['trust_nbu_privacy', 'Я довіряю Національному банку України у питаннях захисту даних про мої платежі.'],
-            ['trust_bank_privacy', 'Я довіряю банкам у питаннях захисту даних про мої платежі.'],
+            ['trust_bank_privacy', 'Я довіряю банкам у питаннях захисту даних про мої платежі'],
             ['attn_item', 'Будь ласка, оберіть «2» у цьому рядку – це перевірка уважності.'],
             ['trust_ps_privacy', 'Я довіряю платіжним системам у питаннях захисту даних про мої платежі.'],
             ['priv_financial', 'Мені важливо мати змогу обмежувати доступ сторонніх до відомостей про мої платежі.'],
@@ -216,21 +215,19 @@ var AI_TEXT = {
 var DEBRIEF = '<p>Ми перевіряємо, як оформлення екрана впливає на фінансовий вибір і на те, чи помічають люди цей вплив. Учасники випадково потрапляли в одну з двох умов. В одній обидва варіанти подавали однаково. В іншій один із варіантів навмисно робили помітнішим, обмежували час на рішення або формулювали запитання заплутано – це відомі прийоми, які в дослідженнях називають темними паттернами. Який саме варіант підсилювали, теж визначав випадок: у частини учасників – гаманець CBDC е-гривні, у частини – банківську картку.</p>' +
   '<p>У цьому дослідженні жодного реального рахунку чи гаманця не відкрито. Показані умови вигадані: вони не описують чинних продуктів і не підтверджують намірів НБУ, банків або будь-якої іншої установи застосовувати таке оформлення.</p>' +
   '<p>Просимо, якщо можливо, не обговорювати конкретні екрани з майбутніми учасниками до завершення збору даних. Це прохання добровільне.</p>';
+// Службові повідомлення (у макеті не описані — мінімальні нейтральні тексти)
 var MSG = {
-  C1: 'Дякуємо. Участь не розпочато, відповіді не збиралися.',
-  C2: 'Будь ласка, дайте відповідь на всі запитання на цій сторінці.',
-  C6: 'Відповіді збережено. Дякуємо!',
-  C8: 'Припинити участь і відкликати відповіді? Їх не буде використано в дослідженні.',
-  C9: 'Ваші відповіді відкликано. Їх не буде використано. За бажанням можна прочитати пояснення мети.',
-  C10: 'Дослідження призупинено через повітряну тривогу. Будь ласка, пройдіть в укриття. До продовження можна відкликати вже надані відповіді, повідомивши дослідника.',
-  C11: 'Виникла технічна проблема. Будь ласка, зверніться до дослідника.',
-  C12: 'Попереднє проходження було перервано. Ви можете продовжити з місця переривання – уже збережені відповіді залишаються без змін – або припинити участь.'
+  declined: 'Дякуємо. Участь не розпочато, відповіді не збиралися.',
+  missing: 'Будь ласка, дайте відповідь на всі запитання на цій сторінці.',
+  done: 'Відповіді збережено. Дякуємо!',
+  confirmStop: 'Припинити участь і відкликати відповіді? Їх не буде використано в дослідженні.',
+  stopped: 'Ваші відповіді відкликано. Їх не буде використано.',
+  tech: 'Виникла технічна проблема. Будь ласка, зверніться до дослідника.'
 };
-// 24 слоти блоку: N (12) / M-anti (6) / M-pro (6), кожен навпіл з варіантом відповіді ШІ A/B
-var SLOTS = (function () { var s = [], i; for (i = 0; i < 6; i++) { s.push(['N', '', 'A']); s.push(['N', '', 'B']); } for (i = 0; i < 3; i++) { s.push(['M', 'anti', 'A']); s.push(['M', 'anti', 'B']); s.push(['M', 'pro', 'A']); s.push(['M', 'pro', 'B']); } return s; })();
-var URGENCY_SEC = 180, TRANSITION_MS = 500, AI_WAIT_MS = 2500;
-// лише для перевірки: ?urg=секунд&aiwait=мс (на учасників не впливає — параметрів у звичайному посиланні немає)
-var FLOW = ['s1', 's2', 's3', 's4a', 's4b', 's4c', 's5', 'sB1', 'sB2', 'assign', 's6', 's7', 's8', 's9', 's11q', 's11a', 's12', 's15'];
+var AI_BLOCK = ['A', 'A', 'B', 'B']; // відповідь ШІ: випадково, порівну в кожній четвірці учасників
+var URGENCY_SEC = 180, AI_WAIT_MS = 2500;
+// ПОСЛІДОВНІСТЬ ЕКРАНІВ — точно як у макеті; кожен екран показується рівно один раз
+var FLOW = ['s1', 's2', 's3', 's4a', 's4b', 's4c', 's5', 'sB1', 'sB2', 's6', 's7', 's8', 's9', 'assign', 's11q', 's11a', 's12', 's15'];
 
 // ------------------------------------------------------------------ утиліти
 function $(sel, root) { return (root || document).querySelector(sel); }
@@ -240,15 +237,11 @@ function pad2(n) { return (n < 10 ? '0' : '') + n; }
 function nowIso() { return new Date().toISOString(); }
 function clone(o) { return JSON.parse(JSON.stringify(o)); }
 function on(el, ev, fn) { if (el) el.addEventListener(ev, fn, false); }
-function cryptoObj() { return window.crypto || window.msCrypto || null; }
-function randU32() { var c = cryptoObj(); if (c && c.getRandomValues) { var a = new Uint32Array(1); c.getRandomValues(a); return a[0]; } return Math.floor(Math.random() * 4294967296); }
+function randU32() { var c = window.crypto || window.msCrypto; if (c && c.getRandomValues) { var a = new Uint32Array(1); c.getRandomValues(a); return a[0]; } return Math.floor(Math.random() * 4294967296); }
 function randUnit() { return randU32() / 4294967296; }
-function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; var t = imul(a ^ a >>> 15, 1 | a); t = t + imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
 function shuffle(arr, rng) { var a = arr.slice(); for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(rng() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
 function code(n) { var c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789', s = ''; for (var i = 0; i < n; i++) s += c.charAt(randU32() % c.length); return s; }
-function isNum(v) { return typeof v === 'number' && isFinite(v); }
 function keys(arr) { return arr.map(function (x) { return x[0]; }); }
-function lookup(arr) { var m = {}; arr.forEach(function (x) { m[x[0]] = x[1]; }); return m; }
 function contains(arr, v) { return arr.indexOf(v) >= 0; }
 function qs(name) { var m = new RegExp('[?&]' + name + '=([^&#]*)').exec(location.search); return m ? decodeURIComponent(m[1].replace(/\+/g, ' ')) : ''; }
 
@@ -260,24 +253,24 @@ function lsSet(k, v) { MEM[k] = clone(v); if (!LS_OK) return true; try { localSt
 function lsDel(k) { delete MEM[k]; if (LS_OK) { try { localStorage.removeItem(k); } catch (e) {} } }
 
 // ------------------------------------------------------------------ налаштування
-var GS = !!(window.google && google.script && google.script.run); // відкрито за посиланням з Apps Script
+var GS = !!(window.google && google.script && google.script.run);
 var EMBED = {}; try { EMBED = JSON.parse(($('#tp-config') || {}).textContent || '{}'); } catch (e) {}
-var LOCALSET = lsGet('tp2.settings') || {};
-var SETTINGS = Object.assign({ endpoint: '', mode: 'auto', station_id: '', operator_pin: '2468', poll_sec: 15, fullscreen: true, cfg_version: 0 }, EMBED, LOCALSET);
+var LOCALSET = lsGet('tp3.settings') || {};
+var SETTINGS = Object.assign({ endpoint: '', mode: 'auto', station_id: '', operator_pin: '2468', cfg_version: 0 }, EMBED, LOCALSET);
 if ((EMBED.cfg_version || 0) > (LOCALSET.cfg_version || 0)) Object.assign(SETTINGS, EMBED, { station_id: LOCALSET.station_id || '' });
 ['endpoint', 'mode', 'station_id'].forEach(function (k) { var v = qs(k); if (v) SETTINGS[k] = v; });
+// лише для автоперевірок: ?urg=секунд&aiwait=мс
 if (qs('urg')) URGENCY_SEC = parseFloat(qs('urg')); if (qs('aiwait')) AI_WAIT_MS = parseInt(qs('aiwait'), 10);
 var ONLINE = GS || /^https?:/.test(location.protocol);
 if (!SETTINGS.station_id) { SETTINGS.station_id = (ONLINE ? 'WEB-' : 'ST-') + code(4); saveSettings(); }
-// Публічна версія (GitHub): PIN у файлі не зберігається — його перевіряє лише сервер.
 var ENTERED_PIN = '';
 function opPin() { return ENTERED_PIN || SETTINGS.operator_pin; }
-function saveSettings() { lsSet('tp2.settings', SETTINGS); }
+function saveSettings() { lsSet('tp3.settings', SETTINGS); }
 function hasCloud() { return GS || !!SETTINGS.endpoint; }
-function mode() { if (SETTINGS.mode && SETTINGS.mode !== 'auto') return SETTINGS.mode; return hasCloud() ? 'local_sync' : 'local'; }
+function mode() { if (SETTINGS.mode === 'local' || SETTINGS.mode === 'local_sync') return SETTINGS.mode; return hasCloud() ? 'local_sync' : 'local'; }
 function cloudOn() { return hasCloud() && mode() !== 'local'; }
 
-// ------------------------------------------------------------------ мережа (XHR або google.script.run) — без fetch і Promise
+// ------------------------------------------------------------------ мережа (XHR або google.script.run)
 function post(body, timeoutMs, cb) {
   var done = false;
   function finish(err, res) { if (done) return; done = true; clearTimeout(t); cb(err, res); }
@@ -288,46 +281,34 @@ function post(body, timeoutMs, cb) {
     return;
   }
   if (!SETTINGS.endpoint) return finish(new Error('no_endpoint'));
-  var x;
   try {
-    x = new XMLHttpRequest();
+    var x = new XMLHttpRequest();
     x.open('POST', SETTINGS.endpoint, true);
     x.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
     x.onreadystatechange = function () {
       if (x.readyState !== 4) return;
-      if (x.status >= 200 && x.status < 300) {
-        var r; try { r = JSON.parse(x.responseText); } catch (e) { return finish(new Error('bad_json')); }
-        if (r && r.ok) finish(null, r); else finish(new Error((r && r.error) || 'bad_response'));
-      } else finish(new Error('http_' + x.status));
+      if (x.status >= 200 && x.status < 300) { var r; try { r = JSON.parse(x.responseText); } catch (e) { return finish(new Error('bad_json')); } if (r && r.ok) finish(null, r); else finish(new Error((r && r.error) || 'bad_response')); }
+      else finish(new Error('http_' + x.status));
     };
     x.send(JSON.stringify(body));
   } catch (e) { finish(e); }
 }
 
 // ------------------------------------------------------------------ сесії
-function index() { return lsGet('tp2.index') || []; }
-function getLocal(id) { return lsGet('tp2.s.' + id); }
-function putLocal(s) { var ok = lsSet('tp2.s.' + s.session_id, s); var i = index(); if (!contains(i, s.session_id)) { i.push(s.session_id); lsSet('tp2.index', i); } return ok; }
+function index() { return lsGet('tp3.index') || []; }
+function getLocal(id) { return lsGet('tp3.s.' + id); }
+function putLocal(s) { var ok = lsSet('tp3.s.' + s.session_id, s); var i = index(); if (!contains(i, s.session_id)) { i.push(s.session_id); lsSet('tp3.index', i); } return ok; }
 function allLocal() { return index().map(getLocal).filter(function (x) { return !!x; }); }
-function syncMap() { return lsGet('tp2.sync') || {}; }
-function markSynced(id, rev) { var m = syncMap(); m[id] = Math.max(m[id] || 0, rev); lsSet('tp2.sync', m); lsSet('tp2.lastsync', nowIso()); }
+function syncMap() { return lsGet('tp3.sync') || {}; }
+function markSynced(id, rev) { var m = syncMap(); m[id] = Math.max(m[id] || 0, rev); lsSet('tp3.sync', m); lsSet('tp3.lastsync', nowIso()); }
 function unsynced() { var m = syncMap(); return allLocal().filter(function (s) { return (m[s.session_id] || 0) < s.rev; }); }
-
 function persist(s, cb) {
   s.rev = (s.rev || 0) + 1; s.updated_at = nowIso();
   var localOk = putLocal(s);
-  if (mode() === 'cloud_strict') {
-    var snap = clone(s);
-    post({ action: 'save', session: snap, flat: flat(snap) }, 20000, function (err) {
-      if (err) { if (window.console) console.warn('save failed', err); return cb(false); }
-      markSynced(snap.session_id, snap.rev); cb(true);
-    });
-    return;
-  }
   if (cloudOn()) setTimeout(syncNow, 50);
   cb(localOk || !LS_OK);
 }
-var SYNCING = false;
+var SYNCING = false, LAST_PING = null;
 function syncNow(done) {
   if (SYNCING || !cloudOn()) { if (done) done(); return; }
   var list = unsynced(); if (!list.length) { if (done) done(); return; }
@@ -336,40 +317,29 @@ function syncNow(done) {
     if (i >= list.length) { SYNCING = false; renderOpStatus(); if (done) done(); return; }
     var s = list[i];
     post({ action: 'save', session: s, flat: flat(s) }, 20000, function (err) {
-      if (err) { SYNCING = false; renderOpStatus(); if (done) done(); return; }
-      markSynced(s.session_id, s.rev); step(i + 1);
+      if (err) { LAST_PING = { ok: false, at: nowIso() }; SYNCING = false; renderOpStatus(); if (done) done(); return; }
+      LAST_PING = { ok: true, at: nowIso() }; markSynced(s.session_id, s.rev); step(i + 1);
     });
   })(0);
 }
 function localAssign() {
-  var b = lsGet('tp2.localblock');
-  if (!b || !b.slots || b.pos >= b.slots.length) {
-    var n = (lsGet('tp2.localblockcount') || 0) + 1; lsSet('tp2.localblockcount', n);
-    b = { id: SETTINGS.station_id + '-L' + n, slots: shuffle(SLOTS, randUnit), pos: 0 };
-  }
-  var sl = b.slots[b.pos];
-  var a = { block_id: b.id, slot: b.pos + 1, arch: sl[0], dir: sl[1] || null, ai_variant: sl[2], source: 'local', assigned_at: nowIso() };
-  b.pos++; lsSet('tp2.localblock', b);
+  var b = lsGet('tp3.aiblock');
+  if (!b || !b.slots || b.pos >= b.slots.length) { var n = (lsGet('tp3.aiblockcount') || 0) + 1; lsSet('tp3.aiblockcount', n); b = { id: SETTINGS.station_id + '-L' + n, slots: shuffle(AI_BLOCK, randUnit), pos: 0 }; }
+  var a = { block_id: b.id, slot: b.pos + 1, ai_variant: b.slots[b.pos], source: 'local', assigned_at: nowIso() };
+  b.pos++; lsSet('tp3.aiblock', b);
   return a;
 }
 function doAssign(s, cb) {
-  if (s.assignment) return cb(null, s.assignment);
-  if (cloudOn()) {
-    post({ action: 'assign', session_id: s.session_id, station_id: SETTINGS.station_id }, mode() === 'cloud_strict' ? 20000 : 8000, function (err, r) {
-      if (!err && r && r.assignment) return cb(null, r.assignment);
-      if (mode() === 'cloud_strict') return cb(err || new Error('assign_failed'));
-      cb(null, localAssign());
-    });
-    return;
-  }
-  cb(null, localAssign());
+  if (s.assignment) return cb(s.assignment);
+  if (!cloudOn()) return cb(localAssign());
+  post({ action: 'assign', session_id: s.session_id, station_id: SETTINGS.station_id }, 8000, function (err, r) { cb(!err && r && r.assignment ? r.assignment : localAssign()); });
 }
 
-// ------------------------------------------------------------------ активний час
-var ALARM_ON = false, ALARM_SRC = null, CLOCKS = [];
+// ------------------------------------------------------------------ активний час (без часу у фоновій вкладці)
+var CLOCKS = [];
 function Clock() { this.acc = 0; this.since = null; this.running = false; }
 Clock.prototype.start = function () { this.running = true; this.resume(); };
-Clock.prototype.resume = function () { if (this.running && this.since === null && !document.hidden && !ALARM_ON && !OP) this.since = nowMs(); };
+Clock.prototype.resume = function () { if (this.running && this.since === null && !document.hidden && !OP) this.since = nowMs(); };
 Clock.prototype.pause = function () { if (this.since !== null) { this.acc += nowMs() - this.since; this.since = null; } };
 Clock.prototype.stop = function () { this.pause(); this.running = false; return Math.round(this.acc); };
 Clock.prototype.ms = function () { return Math.round(this.acc + (this.since !== null ? nowMs() - this.since : 0)); };
@@ -381,7 +351,6 @@ on(document, 'visibilitychange', function () { if (document.hidden) pauseAll(); 
 // ------------------------------------------------------------------ стан і рендер
 var S = null, CUR = null, BUSY = false, OP = null, PREVIEW = false;
 var app = document.getElementById('app');
-
 function logFlow(screen, event, detail) {
   if (!S || PREVIEW) return;
   S.flow.push({ seq: S.flow.length + 1, screen: screen, event: event, at: nowIso(), active_ms: CUR && CUR.clock ? CUR.clock.ms() : null, detail: detail || '' });
@@ -393,7 +362,7 @@ function render(html, key, opts) {
   app.innerHTML = '<div class="page">' + html + '</div>' + (opts.stop ? '<div class="stop-wrap"><button class="stop" id="stop-btn" type="button">Припинити участь</button></div>' : '');
   try { window.scrollTo(0, 0); } catch (e) {}
   CUR = { key: key, clock: newClock(), cleanup: null };
-  on($('#stop-btn'), 'click', function () { showC8(); });
+  on($('#stop-btn'), 'click', function () { askStop(); });
   var c = CUR.clock; raf(function () { raf(function () { c.start(); }); });
   if (S && key) logFlow(key, 'show', opts.detail);
   return CUR;
@@ -405,51 +374,34 @@ function overlay(html, cls) {
   var f = d.querySelector('button, input'); if (f) try { f.focus(); } catch (e) {}
   return d;
 }
-function showC2() { if (document.querySelector('.ov.c2')) return; var o = overlay('<p>' + MSG.C2 + '</p><div class="btn-row"><button class="btn" type="button">Повернутися</button></div>', 'c2'); on(o.querySelector('button'), 'click', function () { removeEl(o); }); if (CUR) logFlow(CUR.key, 'c2'); }
-var savingT = null;
-function savingOn() { clearTimeout(savingT); savingT = setTimeout(function () { if (!$('#saving')) { var d = document.createElement('div'); d.id = 'saving'; d.className = 'saving'; d.textContent = 'Збереження…'; document.body.appendChild(d); } }, 400); }
-function savingOff() { clearTimeout(savingT); removeEl($('#saving')); }
+function showMissing() { if (document.querySelector('.ov.c2')) return; var o = overlay('<p>' + MSG.missing + '</p><div class="btn-row"><button class="btn" type="button">Повернутися</button></div>', 'c2'); on(o.querySelector('button'), 'click', function () { removeEl(o); }); if (CUR) logFlow(CUR.key, 'missing'); }
 
 function complete(key, mutate) {
-  if (BUSY || !S) return; BUSY = true;
+  if (BUSY || !S || contains(S.saved, key)) return;
+  BUSY = true;
   var active = CUR && CUR.clock ? CUR.clock.stop() : null;
   if (mutate) mutate(active);
-  if (!contains(S.saved, key)) S.saved.push(key);
+  S.saved.push(key);
   logFlow(key, 'save');
-  savingOn();
-  persist(S, function (ok) { savingOff(); BUSY = false; if (!ok) return showC11(key); next(); });
+  persist(S, function (ok) { BUSY = false; if (!ok) return showTech(key); next(); });
 }
 function nextKey() { for (var i = 0; i < FLOW.length; i++) { var k = FLOW[i]; if (k === 'assign') { if (!S.assignment) return k; } else if (!contains(S.saved, k)) return k; } return null; }
 function next() {
   if (!S) return SCREENS.s1();
   var k = nextKey();
-  if (!k) return showC6();
+  if (!k) return showDone();
   if (k === 'assign') return runAssign();
   SCREENS[k]();
 }
 function wasShown(screen) { for (var i = 0; i < S.flow.length; i++) if (S.flow[i].screen === screen && S.flow[i].event === 'show') return true; return false; }
 
-// ------------------------------------------------------------------ сесія
-function makeDraws(seed) {
-  var rng = mulberry32(seed), d = {};
-  d.trust_order = shuffle(keys(TRUST), rng);
-  d.pay_order = shuffle(keys(PAY), rng);
-  d.prio_order = shuffle(keys(PRIO), rng);
-  var p; do { p = shuffle(keys(PRIV), rng); } while (p[0] === 'attn_item' || p[p.length - 1] === 'attn_item');
-  d.priv_order = p;
-  d.pos_cbdc = rng() < 0.5 ? 'left' : 'right';
-  d.pref_order = shuffle(keys(PREF), rng);
-  d.final_order = shuffle(['cbdc', 'bank'], rng);
-  return d;
-}
 function newSession() {
-  var seed = randU32();
   return { session_id: code(10), app_version: APP_VERSION, design_version: DESIGN_VERSION, station_id: SETTINGS.station_id, mode: mode(), hosted: GS ? 1 : 0,
-    created_at: nowIso(), updated_at: null, completed_at: null, status: 'in_progress', interruption_reason: '', use_prohibited: 0,
-    rand_seed: seed, draws: makeDraws(seed), assignment: null, saved: [], answers: {}, tasks: [], flow: [], rev: 0, alarm_count: 0, resumed: 0,
+    created_at: nowIso(), updated_at: null, completed_at: null, status: 'in_progress', use_prohibited: 0,
+    assignment: null, saved: [], answers: {}, tasks: [], flow: [], rev: 0, resumed: 0,
     ua: (navigator.userAgent || '').slice(0, 200), screen_w: window.screen ? screen.width : null };
 }
-function setActive(id) { if (id) lsSet('tp2.active', id); else lsDel('tp2.active'); }
+function setActive(id) { if (id) lsSet('tp3.active', id); else lsDel('tp3.active'); }
 function toStart() { S = null; setActive(null); SCREENS.s1(); }
 
 // ------------------------------------------------------------------ компоненти
@@ -461,17 +413,18 @@ function scale(name, n) {
 }
 function anchors(n, l, r) { return '<div class="anchors s' + n + '"><span class="l">' + l + '</span><span class="r">' + r + '</span></div>'; }
 function val(name) { var el = document.querySelector('input[name="' + name + '"]:checked'); if (!el) return null; return /^\d+$/.test(el.value) ? parseInt(el.value, 10) : el.value; }
-function wireOpts() {
-  $$('.opt input').forEach(function (inp) {
-    on(inp, 'change', function () { $$('input[name="' + inp.name + '"]').forEach(function (x) { var l = x.parentNode; if (x.checked) l.className = 'opt sel'; else l.className = 'opt'; }); });
+function wireOpts() { $$('.opt input').forEach(function (inp) { on(inp, 'change', function () { $$('input[name="' + inp.name + '"]').forEach(function (x) { x.parentNode.className = x.checked ? 'opt sel' : 'opt'; }); }); }); }
+function collect(names) { var v = {}; for (var i = 0; i < names.length; i++) { v[names[i]] = val(names[i]); if (v[names[i]] === null) return null; } return v; }
+function rowsOf(items, n, anch) { return items.map(function (it) { return '<div class="row-item"><div class="lbl">' + esc(it[1]) + '</div>' + scale(it[0], n) + (anch ? anchors(n, anch[0], anch[1]) : '') + '</div>'; }).join(''); }
+var NEXT_BTN = '<div class="btn-row"><button class="btn" id="go" type="button">Далі</button></div>';
+function simpleScreen(key, html, names, rtName, extra) {
+  render(html + NEXT_BTN, key, { stop: true });
+  wireOpts();
+  on($('#go'), 'click', function () {
+    var v = names.length ? collect(names) : {}; if (!v) return showMissing();
+    complete(key, function (ms) { Object.assign(S.answers, v, extra || {}); S.answers[rtName] = ms; });
   });
 }
-function collect(names) { var v = {}; for (var i = 0; i < names.length; i++) { v[names[i]] = val(names[i]); if (v[names[i]] === null) return null; } return v; }
-function battery(items, order, n, l, r) {
-  var m = lookup(items);
-  return order.map(function (k) { return '<div class="row-item"><div class="lbl">' + esc(m[k]) + '</div>' + scale(k, n) + anchors(n, l, r) + '</div>'; }).join('');
-}
-var NEXT_BTN = '<div class="btn-row"><button class="btn" id="go" type="button">Далі</button></div>';
 
 // ------------------------------------------------------------------ ЕКРАНИ
 var SCREENS = {};
@@ -495,157 +448,88 @@ SCREENS.s1 = function () {
     if (go.disabled || BUSY || S) return;
     S = newSession(); S.answers.age18_confirmed = 1; S.answers.consent = 1;
     setActive(S.session_id); CUR.key = 's1'; logFlow('s1', 'start');
-    if (SETTINGS.fullscreen && !GS) requestFs();
     complete('s1');
   });
   on($('#no'), 'click', function () {
-    lsSet('tp2.declined', (lsGet('tp2.declined') || 0) + 1);
+    lsSet('tp3.declined', (lsGet('tp3.declined') || 0) + 1);
     if (cloudOn()) post({ action: 'declined' }, 8000, function () {});
-    render('<div style="text-align:center;padding-top:15vh"><p>' + MSG.C1 + '</p><div class="btn-row"><button class="btn" id="cl" type="button">Закрити</button></div></div>', null);
+    render('<div style="text-align:center;padding-top:15vh"><p>' + MSG.declined + '</p><div class="btn-row"><button class="btn" id="cl" type="button">Закрити</button></div></div>', null);
     on($('#cl'), 'click', function () { SCREENS.s1(); });
   });
 };
-function requestFs() { var d = document.documentElement, f = d.requestFullscreen || d.msRequestFullscreen || d.webkitRequestFullscreen; if (f && !(document.fullscreenElement || document.msFullscreenElement || document.webkitFullscreenElement)) { try { var r = f.call(d); if (r && r['catch']) r['catch'](function () {}); } catch (e) {} } }
-
 SCREENS.s2 = function () {
   render('<h1>Як відповідати</h1><p class="lead">Вам пропонуються уявні ситуації. Обирайте так, як вчинили б у житті. Повернутися до завершеної сторінки не можна. Читайте умови перед переходом далі.</p>' +
     '<div class="btn-row"><button class="btn" id="go" type="button">Почати</button></div>', 's2', { stop: true });
   on($('#go'), 'click', function () { complete('s2', function (ms) { S.answers.rt_instr = ms; }); });
 };
-
-SCREENS.s3 = function () {
-  render('<h1>Наскільки ви довіряєте кожній із цих установ?</h1>' + battery(TRUST, S.draws.trust_order, 10, '1 – Зовсім не довіряю', '10 – Повністю довіряю') + NEXT_BTN, 's3', { stop: true });
-  on($('#go'), 'click', function () {
-    var v = collect(keys(TRUST)); if (!v) return showC2();
-    complete('s3', function (ms) { Object.assign(S.answers, v); S.answers.rt_s3 = ms; });
-  });
-};
-
-SCREENS.s4a = function () {
-  render('<p class="counter">Сторінка 4 · частина 1 з 3</p><h1>У який спосіб Ви віддаєте перевагу здійснювати щоденні платежі?</h1>' +
-    '<p class="muted small">Оцініть кожен спосіб: 1 – зовсім не віддаю переваги, 10 – повністю віддаю перевагу.</p>' +
-    battery(PAY, S.draws.pay_order, 10, '1 – Зовсім не віддаю переваги', '10 – Повністю віддаю перевагу') + NEXT_BTN, 's4a', { stop: true });
-  on($('#go'), 'click', function () {
-    var v = collect(keys(PAY)); if (!v) return showC2();
-    complete('s4a', function (ms) { Object.assign(S.answers, v); S.answers.rt_s4a = ms; });
-  });
-};
-
-SCREENS.s4b = function () {
-  render('<p class="counter">Сторінка 4 · частина 2 з 3</p><h1>Що для Вас є пріоритетним при виборі платіжного засобу?</h1>' +
-    battery(PRIO, S.draws.prio_order, 10, '1 – Зовсім не пріоритетно', '10 – Найвищий пріоритет') + NEXT_BTN, 's4b', { stop: true });
-  on($('#go'), 'click', function () {
-    var v = collect(keys(PRIO)); if (!v) return showC2();
-    complete('s4b', function (ms) { Object.assign(S.answers, v); S.answers.rt_s4b = ms; });
-  });
-};
-
+SCREENS.s3 = function () { simpleScreen('s3', '<h1>Наскільки ви довіряєте кожній із цих установ?</h1>' + rowsOf(TRUST, 10, ['1 – Зовсім не довіряю', '10 – Повністю довіряю']), keys(TRUST), 'rt_s3'); };
+SCREENS.s4a = function () { simpleScreen('s4a', '<h1>У який спосіб Ви віддаєте перевагу здійснювати щоденні платежі?</h1>' + rowsOf(PAY, 10), keys(PAY), 'rt_s4a'); };
+SCREENS.s4b = function () { simpleScreen('s4b', '<h1>Що для Вас є пріоритетним при виборі платіжного засобу?</h1>' + rowsOf(PRIO, 10), keys(PRIO), 'rt_s4b'); };
 SCREENS.s4c = function () {
-  render('<p class="counter">Сторінка 4 · частина 3 з 3</p>' +
-    '<div class="q"><div class="q-title">Чи чули ви про CBDC до початку цього дослідження?</div>' + radios('cbdc_aware', AWARE) + '</div>' +
+  simpleScreen('s4c', '<div class="q"><div class="q-title">Чи чули ви про CBDC до початку цього дослідження?</div>' + radios('cbdc_aware', AWARE) + '</div>' +
     '<div class="q"><div class="q-title">Чи чули ви про е-гривню до початку цього дослідження?</div>' + radios('ehr_aware', AWARE) + '</div>' +
-    '<div class="q"><div class="q-title">Якщо е-гривня буде доступна, наскільки ймовірно, що ви почнете нею користуватися?</div>' + scale('intent_ehr', 7) + anchors(7, '1 – Дуже малоймовірно', '7 – Дуже ймовірно') + '</div>' + NEXT_BTN, 's4c', { stop: true });
-  wireOpts();
-  on($('#go'), 'click', function () {
-    var v = collect(['cbdc_aware', 'ehr_aware', 'intent_ehr']); if (!v) return showC2();
-    complete('s4c', function (ms) { Object.assign(S.answers, v); S.answers.rt_s4c = ms; });
-  });
+    '<div class="q"><div class="q-title">Якщо е-гривня буде доступна, наскільки ймовірно, що ви почнете нею користуватися?</div>' + scale('intent_ehr', 7) + anchors(7, '1 – Дуже малоймовірно', '7 – Дуже ймовірно') + '</div>',
+    ['cbdc_aware', 'ehr_aware', 'intent_ehr'], 'rt_s4c');
 };
-
 SCREENS.s5 = function () {
-  var m = lookup(PRIV);
-  render('<h1>Наскільки ви погоджуєтеся з кожним твердженням?</h1><p class="lk-head">1 – «Зовсім не погоджуюся» · 4 – «І погоджуюся, і не погоджуюся» · 7 – «Повністю погоджуюся»</p>' +
-    S.draws.priv_order.map(function (k) { return '<div class="lk-row"><div class="stmt">' + esc(m[k]) + '</div>' + scale(k, 7) + '</div>'; }).join('') + NEXT_BTN, 's5', { stop: true });
-  on($('#go'), 'click', function () {
-    var v = collect(keys(PRIV)); if (!v) return showC2();
-    complete('s5', function (ms) { Object.assign(S.answers, v); S.answers.rt_s5 = ms; });
-  });
+  simpleScreen('s5', '<h1>Наскільки ви погоджуєтеся з кожним твердженням?</h1><p class="lk-head">1 – «Зовсім не погоджуюся» · 4 – «І погоджуюся, і не погоджуюся» · 7 – «Повністю погоджуюся»</p>' +
+    PRIV.map(function (p) { return '<div class="lk-row"><div class="stmt">' + esc(p[1]) + '</div>' + scale(p[0], 7) + '</div>'; }).join(''), keys(PRIV), 'rt_s5');
 };
-
 SCREENS.sB1 = function () {
-  render('<h1>Загальний порівняльний опис двох варіантів платіжних інструментів</h1>' +
+  simpleScreen('sB1', '<h1>Загальний порівняльний опис двох варіантів платіжних інструментів</h1>' +
     '<table class="cmp"><thead><tr><th></th><th>CBDC</th><th>БАНКІВСЬКА КАРТКА (смартфон)</th></tr></thead><tbody>' +
     CMP.map(function (r) { return '<tr><td class="k">' + esc(r[0]) + '</td><td><span class="hd">CBDC</span>' + esc(r[1]) + '</td><td><span class="hd">Банківська картка (смартфон)</span>' + esc(r[2]) + '</td></tr>'; }).join('') +
-    '</tbody></table>' + NEXT_BTN, 'sB1', { stop: true });
-  on($('#go'), 'click', function () { complete('sB1', function (ms) { S.answers.rt_info = ms; }); });
+    '</tbody></table>', [], 'rt_info');
 };
-
 SCREENS.sB2 = function () {
-  render(BELIEFS.map(function (b) {
-    return '<div class="yn-row"><div class="t">' + esc(b[1]) + '</div><div class="yn" role="radiogroup">' +
-      '<label><input type="radio" name="' + b[0] + '" value="yes">так</label><label><input type="radio" name="' + b[0] + '" value="no">ні</label></div></div>';
-  }).join('') + NEXT_BTN, 'sB2', { stop: true });
+  simpleScreen('sB2', BELIEFS.map(function (b) {
+    return '<div class="yn-row"><div class="t">' + esc(b[1]) + '</div><div class="yn" role="radiogroup"><label><input type="radio" name="' + b[0] + '" value="yes">так</label><label><input type="radio" name="' + b[0] + '" value="no">ні</label></div></div>';
+  }).join(''), keys(BELIEFS), 'rt_sB2');
   $$('.yn input').forEach(function (inp) { on(inp, 'change', function () { $$('input[name="' + inp.name + '"]').forEach(function (x) { x.parentNode.className = x.checked ? 'on' : ''; }); }); });
-  on($('#go'), 'click', function () {
-    var v = collect(keys(BELIEFS)); if (!v) return showC2();
-    complete('sB2', function (ms) { Object.assign(S.answers, v); S.answers.rt_sB2 = ms; });
-  });
 };
 
-function runAssign() {
-  render('<div class="trans"><div class="dots"><span></span><span class="d2"></span><span class="d3"></span></div></div>', null);
-  if (BUSY) return; BUSY = true;
-  doAssign(S, function (err, a) {
-    if (err) { BUSY = false; return showC11('assign'); }
-    S.assignment = a; logFlow('assign', 'assigned', a.arch + (a.dir ? '/' + a.dir : '') + '/' + a.ai_variant + ' · ' + a.source);
-    persist(S, function (ok) { BUSY = false; if (!ok) return showC11('assign'); next(); });
-  });
-}
-
-// ---------- екрани 6–8
-function taskSpec(screen) {
-  var a = S.assignment, M = a.arch === 'M';
-  var enhanced = M ? (a.dir === 'pro' ? 'cbdc' : 'card') : null;
-  var pattern = null;
-  if (M && screen === 's7') pattern = 'dominance';
-  if (M && screen === 's8') pattern = 'urgency';
-  return { screen: screen, arch: a.arch, dir: M ? a.dir : null, pattern: pattern, enhanced: enhanced };
-}
-function renderTask(spec) {
-  var reexp = !PREVIEW && wasShown(spec.screen) ? 1 : 0;
-  var title = spec.screen === 's6' ? 'Оберіть платіжний інструмент з огляду на отриману Вами інформацію та Ваші вподобання' : 'Підтвердіть вибір платіжного інструменту';
-  var first = S.draws.pos_cbdc === 'left' ? 'cbdc' : 'card', second = first === 'cbdc' ? 'card' : 'cbdc';
-  var html = '', posCbdc = S.draws.pos_cbdc;
-  if (!spec.pattern) {
-    // таблиця: висоти комірок у рядку вирівнюються автоматично — кнопки завжди на одній висоті
-    html = '<table class="pair-t"><tr>' + [first, second].map(function (i) { return '<th class="opt-name">' + NAME[i] + '</th>'; }).join('') + '</tr><tr>' +
-      [first, second].map(function (i) { return '<td><button class="btn pick" type="button" data-choice="' + i + '">Обрати</button></td>'; }).join('') + '</tr></table>';
+// ---------- екрани 6–8: три РІЗНІ екрани, як у макеті
+//  6 — нейтральний вибір: CBDC ліворуч, картка праворуч, однакові кнопки
+//  7 — підтвердження: картка виділена й ліворуч, CBDC дрібним посиланням праворуч
+//  8 — підтвердження з таймером: CBDC дрібним посиланням ліворуч, картка виділена праворуч
+var TASK = {
+  s6: { title: 'Оберіть платіжний інструмент з огляду на отриману Вами інформацію та Ваші вподобання', kind: 'neutral' },
+  s7: { title: 'Підтвердіть вибір платіжного інструменту', kind: 'dominance' },
+  s8: { title: 'Підтвердіть вибір платіжного інструменту.', kind: 'urgency' }
+};
+function renderTask(screen) {
+  var T = TASK[screen], reexp = !PREVIEW && wasShown(screen) ? 1 : 0, html;
+  if (T.kind === 'neutral') {
+    html = '<table class="pair-t"><tr><th class="opt-name">' + NAME.cbdc + '</th><th class="opt-name">' + NAME.card + '</th></tr><tr>' +
+      '<td><button class="btn pick" type="button" data-choice="cbdc">Обрати</button></td><td><button class="btn pick" type="button" data-choice="card">Обрати</button></td></tr></table>';
   } else {
-    var enh = spec.enhanced, sup = enh === 'cbdc' ? 'card' : 'cbdc';
-    // макет: на екрані 7 підсилений ліворуч, на екрані 8 — праворуч. Пригнічений завжди першим у DOM (перший Tab).
-    var enhFirst = spec.screen === 's7';
-    posCbdc = (enh === 'cbdc') === enhFirst ? 'left' : 'right';
-    var supHtml = '<div class="opt-card sup ' + (enhFirst ? 'o2' : 'o1') + '"><div class="name">' + NAME[sup] + '</div><button class="linkbtn pick" type="button" data-choice="' + sup + '">' + LINK[sup] + '</button></div>';
-    var enhLabel = spec.pattern === 'urgency' ? LINK[enh] : 'Обрати';
-    var enhHtml = '<div class="opt-card enh ' + (enhFirst ? 'o1' : 'o2') + '"><div class="name">' + NAME[enh] + '</div><button class="btn pick" type="button" data-choice="' + enh + '">' + enhLabel + '</button></div>';
-    html = '<div class="pair dom">' + supHtml + enhHtml + '</div>';
+    var enhFirst = T.kind === 'dominance';
+    // пригнічений варіант — першим у коді сторінки (досяжний першим Tab); візуальний порядок задає CSS
+    var sup = '<div class="opt-card sup ' + (enhFirst ? 'o2' : 'o1') + '"><div class="name">' + NAME.cbdc + '</div><button class="linkbtn pick" type="button" data-choice="cbdc">Обрати: гаманець CBDC</button></div>';
+    var enh = '<div class="opt-card enh ' + (enhFirst ? 'o1' : 'o2') + '"><div class="name">' + NAME.card + '</div><button class="btn pick" type="button" data-choice="card">' + (enhFirst ? 'Обрати' : 'Обрати: банківська картка') + '</button></div>';
+    html = '<div class="pair dom">' + sup + enh + '</div>';
   }
-  var timer = spec.pattern === 'urgency' ? '<div id="timer-box" class="timer"><span class="digits" id="digits">03:00</span><span class="tlabel">До завершення пропозиції залишилося</span></div>' : '';
-  render(timer + '<div class="task-title">' + title + (spec.pattern === 'urgency' ? '.' : '') + '</div>' + html, spec.screen, { stop: true, detail: reexp ? 'reexposed' : '' });
-  var rec = { screen: spec.screen, arch: spec.arch, dir: spec.dir, pattern: spec.pattern, enhanced: spec.enhanced, pos_cbdc: posCbdc, choice: null, pattern_compliance: null, rt_ms: null,
-    timer_expired: spec.pattern === 'urgency' ? 0 : null, timer_restarted: spec.pattern === 'urgency' ? reexp : null, stimulus_reexposed: reexp, shown_at: nowIso(), answered_at: null };
-  if (!PREVIEW) putLocal(S); // фіксуємо факт показу (для stimulus_reexposed після збою)
+  var timer = T.kind === 'urgency' ? '<div id="timer-box" class="timer"><span class="digits" id="digits">' + pad2(Math.floor(URGENCY_SEC / 60)) + ':' + pad2(Math.round(URGENCY_SEC % 60)) + '</span><span class="tlabel">До завершення пропозиції залишилося</span></div>' : '';
+  render(timer + '<div class="task-title">' + T.title + '</div>' + html, screen, { stop: true, detail: reexp ? 'reexposed' : '' });
+  var rec = { screen: screen, kind: T.kind, choice: null, chose_card: null, rt_ms: null, timer_expired: T.kind === 'urgency' ? 0 : null, stimulus_reexposed: reexp, shown_at: nowIso(), answered_at: null };
+  if (!PREVIEW) putLocal(S);
   var clock = CUR.clock, chosen = false;
-  function finish(choice) {
-    if (BUSY || chosen) return; chosen = true;
-    rec.choice = choice; rec.rt_ms = clock.ms(); rec.answered_at = nowIso();
-    rec.pattern_compliance = spec.pattern ? (choice === spec.enhanced ? 1 : 0) : null;
-    if (PREVIEW) { PREVIEW = false; S = null; return SCREENS.s1(); }
-    render('<div class="trans"><div class="dots"><span></span><span class="d2"></span><span class="d3"></span></div></div>', null);
-    BUSY = true;
-    setTimeout(function () {
-      BUSY = false;
-      complete(spec.screen, function () { S.tasks = S.tasks.filter(function (t) { return t.screen !== spec.screen; }); S.tasks.push(rec); });
-    }, TRANSITION_MS);
-  }
-  $$('.pick').forEach(function (b) { on(b, 'click', function () { finish(b.getAttribute('data-choice')); }); });
-  if (spec.pattern === 'urgency') {
+  $$('.pick').forEach(function (b) {
+    on(b, 'click', function () {
+      if (BUSY || chosen) return; chosen = true;
+      var c = b.getAttribute('data-choice');
+      if (PREVIEW) { PREVIEW = false; S = null; return SCREENS.s1(); }
+      rec.choice = c; rec.chose_card = c === 'card' ? 1 : 0; rec.rt_ms = clock.ms(); rec.answered_at = nowIso();
+      complete(screen, function () { S.tasks = S.tasks.filter(function (t) { return t.screen !== screen; }); S.tasks.push(rec); });
+    });
+  });
+  if (T.kind === 'urgency') {
     var limit = URGENCY_SEC * 1000;
     var iv = setInterval(function () {
       var digits = $('#digits'); if (!digits) { clearInterval(iv); return; }
       var rem = limit - clock.ms();
       if (rem <= 0) {
-        clearInterval(iv); rec.timer_expired = 1; logFlow(spec.screen, 'timer_expired');
+        clearInterval(iv); rec.timer_expired = 1; logFlow(screen, 'timer_expired');
         var tb = $('#timer-box'); if (tb) { tb.className = 'expired'; tb.innerHTML = 'Час пропозиції минув. Оберіть, будь ласка.'; }
         return;
       }
@@ -654,21 +538,21 @@ function renderTask(spec) {
     CUR.cleanup = function () { clearInterval(iv); };
   }
 }
-SCREENS.s6 = function () { renderTask(taskSpec('s6')); };
-SCREENS.s7 = function () { renderTask(taskSpec('s7')); };
-SCREENS.s8 = function () { renderTask(taskSpec('s8')); };
+SCREENS.s6 = function () { renderTask('s6'); };
+SCREENS.s7 = function () { renderTask('s7'); };
+SCREENS.s8 = function () { renderTask('s8'); };
 
 SCREENS.s9 = function () {
-  var m = lookup(PREF);
-  render('<h1>Якщо вам стане відомо про доступ до інформації про Ваші платежі, якому інструменту Ви віддаватимете перевагу?</h1>' +
-    radios('pref_access', S.draws.pref_order.map(function (k) { return [k, m[k]]; })) + NEXT_BTN, 's9', { stop: true });
-  wireOpts();
-  on($('#go'), 'click', function () {
-    var v = collect(['pref_access']); if (!v) return showC2();
-    complete('s9', function (ms) { Object.assign(S.answers, v); S.answers.rt_s9 = ms; });
-  });
+  simpleScreen('s9', '<h1>Якщо вам стане відомо про доступ до інформації про Ваші платежі, якому інструменту Ви віддаватимете перевагу?</h1>' + radios('pref_access', PREF), ['pref_access'], 'rt_s9');
 };
-
+function runAssign() {
+  render('<div class="trans"><div class="dots"><span></span><span class="d2"></span><span class="d3"></span></div></div>', null);
+  if (BUSY) return; BUSY = true;
+  doAssign(S, function (a) {
+    S.assignment = a; logFlow('assign', 'assigned', 'ai_' + a.ai_variant + ' · ' + a.source);
+    persist(S, function (ok) { BUSY = false; if (!ok) return showTech('assign'); next(); });
+  });
+}
 SCREENS.s11q = function () {
   render('<p class="ai-intro">Ви обираєте, чи користуватися CBDC, чи іншим платіжним засобом. Перед остаточним рішенням пропонуємо ознайомитися з відповіддю ШІ про захист приватності платежів.</p>' +
     '<p class="muted">У запропонованій моделі гаманець CBDC обслуговує комерційний банк у своєму застосунку.</p>' +
@@ -682,110 +566,73 @@ SCREENS.s11q = function () {
     setTimeout(function () { BUSY = false; complete('s11q', function () { S.answers.rt_ai_send = rt; }); }, AI_WAIT_MS);
   });
 };
-
 SCREENS.s11a = function () {
   var v = S.assignment.ai_variant;
-  render('<div class="ai-answer"><div class="who">Відповідь ШІ</div>' + esc(AI_TEXT[v]) + '</div>' + NEXT_BTN, 's11a', { stop: true, detail: 'variant_' + v });
-  on($('#go'), 'click', function () { complete('s11a', function (ms) { S.answers.ai_variant = v; S.answers.rt_ai_read = ms; }); });
+  simpleScreen('s11a', '<div class="ai-answer"><div class="who">Відповідь ШІ</div>' + esc(AI_TEXT[v]) + '</div>', [], 'rt_ai_read', { ai_variant: v });
 };
-
 SCREENS.s12 = function () {
-  var L = { cbdc: 'Користуватися CBDC', bank: 'Користуватися звичайним банківським рахунком' };
   render('<p class="lead">Ви повертаєтеся до попереднього сценарію вибору. Умови користування залишаються тими самими.</p><h2>Який варіант ви обираєте для здійснення щоденних платежів?</h2>' +
-    S.draws.final_order.map(function (k) { return '<button class="final-opt pick" type="button" data-choice="' + k + '">' + L[k] + '</button>'; }).join('') +
+    '<button class="final-opt pick" type="button" data-choice="cbdc">Користуватися CBDC</button>' +
+    '<button class="final-opt pick" type="button" data-choice="bank">Користуватися звичайним банківським рахунком</button>' +
     '<button class="linkbtn pick" type="button" data-choice="undecided">Поки не можу визначитися</button>', 's12', { stop: true });
   var done = false;
   $$('.pick').forEach(function (b) { on(b, 'click', function () { if (done || BUSY) return; done = true; var c = b.getAttribute('data-choice'); complete('s12', function (ms) { S.answers.final_choice = c; S.answers.rt_final = ms; }); }); });
 };
-
 SCREENS.s15 = function () {
   render('<h1>Дякуємо за участь</h1>' + DEBRIEF + '<div class="btn-row"><button class="btn" id="fin" type="button">Завершити</button><button class="btn secondary" id="wd" type="button">Відкликати мої відповіді</button></div>', 's15');
-  on($('#wd'), 'click', function () { showC8(); });
+  on($('#wd'), 'click', function () { askStop(); });
   on($('#fin'), 'click', function () { if (BUSY) return; S.status = 'completed'; S.completed_at = nowIso(); complete('s15'); });
 };
 
 // ------------------------------------------------------------------ службові стани
-function showC6() {
+function showDone() {
   setActive(null);
-  render('<div style="text-align:center;padding-top:15vh"><p style="font-size:22px">' + MSG.C6 + '</p><div class="btn-row"><button class="btn" id="cl" type="button">Закрити</button></div></div>', null);
+  render('<div style="text-align:center;padding-top:15vh"><p style="font-size:22px">' + MSG.done + '</p><div class="btn-row"><button class="btn" id="cl" type="button">Закрити</button></div></div>', null);
   on($('#cl'), 'click', toStart);
 }
-function showC8() {
+function askStop() {
   if (!S || BUSY || document.querySelector('.ov.c8')) return;
-  var o = overlay('<p>' + MSG.C8 + '</p><div class="btn-row"><button class="btn" id="yes" type="button">Так, відкликати</button><button class="btn secondary" id="back" type="button">Повернутися</button></div>', 'c8');
+  var o = overlay('<p>' + MSG.confirmStop + '</p><div class="btn-row"><button class="btn" id="yes" type="button">Так, відкликати</button><button class="btn secondary" id="back" type="button">Повернутися</button></div>', 'c8');
   on($('#back', o), 'click', function () { removeEl(o); });
   on($('#yes', o), 'click', function () { removeEl(o); withdraw(); });
 }
 function withdraw() {
   if (BUSY || !S) return; BUSY = true;
   if (CUR && CUR.clock) CUR.clock.stop();
-  var saw = contains(S.saved, 's6') || wasShown('s6');
-  var w = { session_id: S.session_id, app_version: S.app_version, design_version: S.design_version, station_id: S.station_id, mode: S.mode, hosted: S.hosted, created_at: S.created_at,
-    updated_at: null, completed_at: null, status: 'withdrawn', interruption_reason: '', use_prohibited: 1, withdrawn_at: nowIso(), withdrawn_after: CUR ? CUR.key : null,
-    rand_seed: S.rand_seed, draws: {}, assignment: S.assignment, saved: [], answers: {}, tasks: [], flow: [], rev: S.rev, alarm_count: S.alarm_count, resumed: S.resumed };
-  S = w;
+  S = { session_id: S.session_id, app_version: S.app_version, design_version: S.design_version, station_id: S.station_id, mode: S.mode, hosted: S.hosted, created_at: S.created_at,
+    updated_at: null, completed_at: null, status: 'withdrawn', use_prohibited: 1, withdrawn_at: nowIso(), withdrawn_after: CUR ? CUR.key : null,
+    assignment: S.assignment, saved: [], answers: {}, tasks: [], flow: [], rev: S.rev, resumed: S.resumed };
   persist(S, function (ok) {
-    BUSY = false; if (!ok) return showC11('withdraw');
+    BUSY = false; if (!ok) return showTech('withdraw');
     setActive(null);
-    render('<div style="text-align:center;padding-top:12vh"><p>' + MSG.C9 + '</p><div class="btn-row">' + (saw ? '<button class="btn secondary" id="why" type="button">Пояснення мети</button>' : '') + '<button class="btn" id="cl" type="button">Закрити</button></div></div>', null);
+    render('<div style="text-align:center;padding-top:12vh"><p>' + MSG.stopped + '</p><div class="btn-row"><button class="btn" id="cl" type="button">Закрити</button></div></div>', null);
     on($('#cl'), 'click', toStart);
-    on($('#why'), 'click', function () { render('<h1>Пояснення мети</h1>' + DEBRIEF + '<div class="btn-row"><button class="btn" id="cl2" type="button">Закрити</button></div>', null); on($('#cl2'), 'click', toStart); });
   });
 }
-var C11_CTX = null;
-function showC11(ctx) { C11_CTX = ctx; logFlow(ctx, 'c11'); pauseAll(); if (!$('#c11')) { var o = overlay('<p style="font-size:20px">' + MSG.C11 + '</p>', 'full'); o.id = 'c11'; } }
-function showC12(prev) {
-  render('<div style="padding-top:12vh"><p>' + MSG.C12 + '</p><div class="btn-row"><button class="btn" id="cont" type="button">Продовжити</button><button class="btn secondary" id="quit" type="button">Припинити участь</button></div></div>', null);
-  on($('#cont'), 'click', function () { S = prev; S.resumed = (S.resumed || 0) + 1; logFlow('c12', 'resume'); next(); });
-  on($('#quit'), 'click', function () { S = prev; showC8(); });
-}
-function alarmOn(src) {
-  if (ALARM_ON) return; ALARM_ON = true; pauseAll();
-  if (S) { S.alarm_count = (S.alarm_count || 0) + 1; logFlow(CUR ? CUR.key : null, 'alarm_on', src); }
-  var o = overlay('<p style="font-size:22px">' + MSG.C10 + '</p>', 'full'); o.id = 'c10';
-}
-function alarmOff(src) {
-  if (!ALARM_ON) return; ALARM_ON = false; removeEl($('#c10'));
-  if (S) logFlow(CUR ? CUR.key : null, 'alarm_off', src);
-  if (S && CUR && /^s[678]$/.test(CUR.key) && !contains(S.saved, CUR.key) && !BUSY) { SCREENS[CUR.key](); return; }
-  resumeAll();
-}
-var LAST_PING = null;
-function pollAlarm() {
-  if (!cloudOn()) return;
-  post({ action: 'status' }, 10000, function (err, r) {
-    if (err) { LAST_PING = { ok: false, at: nowIso() }; return; }
-    LAST_PING = { ok: true, at: nowIso() };
-    if (r.alarm) alarmOn('cloud'); else if (ALARM_ON && ALARM_SRC !== 'local') alarmOff('cloud');
-  });
-}
+var TECH_CTX = null;
+function showTech(ctx) { TECH_CTX = ctx; logFlow(ctx, 'tech_error'); pauseAll(); if (!$('#c11')) { var o = overlay('<p style="font-size:20px">' + MSG.tech + '</p>', 'full'); o.id = 'c11'; } }
 
-// ------------------------------------------------------------------ похідні й експорт
+// ------------------------------------------------------------------ дані для аналізу
 var ANSWER_VARS = ['age18_confirmed', 'consent', 'rt_instr'].concat(keys(TRUST), ['rt_s3'], keys(PAY), ['rt_s4a'], keys(PRIO), ['rt_s4b'], ['cbdc_aware', 'ehr_aware', 'intent_ehr', 'rt_s4c'],
   keys(PRIV), ['rt_s5', 'rt_info'], keys(BELIEFS), ['rt_sB2', 'pref_access', 'rt_s9', 'rt_ai_send', 'ai_variant', 'rt_ai_read', 'final_choice', 'rt_final']);
 function flat(s) {
-  var a = s.answers || {}, as = s.assignment || {}, d = s.draws || {}, r = {};
+  var a = s.answers || {}, as = s.assignment || {}, r = {};
   r.session_id = s.session_id; r.station_id = s.station_id; r.app_version = s.app_version; r.design_version = s.design_version; r.mode = s.mode; r.hosted = s.hosted || 0;
-  r.status = s.status; r.interruption_reason = s.interruption_reason || null; r.use_prohibited = s.use_prohibited || 0;
-  r.created_at = s.created_at; r.completed_at = s.completed_at || null; r.updated_at = s.updated_at || null; r.rand_seed = s.rand_seed;
-  r.arch = as.arch || null; r.dir = as.dir || null; r.ai_variant_assigned = as.ai_variant || null; r.block_id = as.block_id == null ? null : as.block_id; r.slot = as.slot == null ? null : as.slot; r.assignment_source = as.source || null;
-  r.trust_order = d.trust_order ? d.trust_order.join('|') : null; r.pay_order = d.pay_order ? d.pay_order.join('|') : null; r.prio_order = d.prio_order ? d.prio_order.join('|') : null;
-  r.priv_order = d.priv_order ? d.priv_order.join('|') : null; r.pos_cbdc = d.pos_cbdc || null; r.pref_order = d.pref_order ? d.pref_order.join('|') : null; r.final_order = d.final_order ? d.final_order.join('|') : null;
+  r.status = s.status; r.use_prohibited = s.use_prohibited || 0;
+  r.created_at = s.created_at; r.completed_at = s.completed_at || null; r.updated_at = s.updated_at || null;
+  r.ai_variant_assigned = as.ai_variant || null; r.block_id = as.block_id == null ? null : as.block_id; r.slot = as.slot == null ? null : as.slot; r.assignment_source = as.source || null;
   ANSWER_VARS.forEach(function (k) { r[k] = a.hasOwnProperty(k) ? a[k] : null; });
   var T = {}; (s.tasks || []).forEach(function (t) { T[t.screen] = t; });
-  ['s6', 's7', 's8'].forEach(function (k) { var t = T[k] || {};
-    r['choice_' + k] = t.choice || null; r['rt_' + k] = t.rt_ms == null ? null : t.rt_ms; r['pattern_' + k] = t.pattern || null;
-    r['compliance_' + k] = t.pattern_compliance == null ? null : t.pattern_compliance; r['pos_cbdc_' + k] = t.pos_cbdc || null; r['reexposed_' + k] = t.stimulus_reexposed == null ? null : t.stimulus_reexposed; });
-  r.timer_expired = T.s8 && T.s8.timer_expired != null ? T.s8.timer_expired : null;
+  ['s6', 's7', 's8'].forEach(function (k) { var t = T[k] || {}; r['choice_' + k] = t.choice || null; r['rt_' + k] = t.rt_ms == null ? null : t.rt_ms; r['reexposed_' + k] = t.stimulus_reexposed == null ? null : t.stimulus_reexposed; });
+  r.timer_expired = T.s8 ? T.s8.timer_expired : null;
   r.switch_s7 = T.s6 && T.s7 ? (T.s7.choice !== T.s6.choice ? 1 : 0) : null;
   r.switch_s8 = T.s7 && T.s8 ? (T.s8.choice !== T.s7.choice ? 1 : 0) : null;
-  r.final_matches_s8 = T.s8 && a.final_choice ? (a.final_choice === 'undecided' ? null : ((a.final_choice === 'cbdc') === (T.s8.choice === 'cbdc') ? 1 : 0)) : null;
   r.attn_pass = a.attn_item == null ? null : (a.attn_item === 2 ? 1 : 0);
-  r.alarm_count = s.alarm_count || 0; r.resumed = s.resumed || 0; r.screens_saved = (s.saved || []).length;
+  r.resumed = s.resumed || 0; r.screens_saved = (s.saved || []).length;
   return r;
 }
-var SESSION_COLS = Object.keys(flat({ answers: {}, draws: {}, tasks: [], saved: [] }));
-var TASK_COLS = ['session_id', 'station_id', 'status', 'arch', 'dir', 'ai_variant', 'screen', 'pattern', 'enhanced', 'pos_cbdc', 'choice', 'pattern_compliance', 'rt_ms', 'timer_expired', 'timer_restarted', 'stimulus_reexposed', 'shown_at', 'answered_at'];
+var SESSION_COLS = Object.keys(flat({ answers: {}, tasks: [], saved: [] }));
+var TASK_COLS = ['session_id', 'station_id', 'status', 'ai_variant', 'screen', 'kind', 'choice', 'chose_card', 'rt_ms', 'timer_expired', 'stimulus_reexposed', 'shown_at', 'answered_at'];
 var FLOW_COLS = ['session_id', 'station_id', 'seq', 'screen', 'event', 'at', 'active_ms', 'detail'];
 function taskRows(list) { var rows = []; list.forEach(function (s) { (s.tasks || []).forEach(function (t) { rows.push(Object.assign({ session_id: s.session_id, station_id: s.station_id, status: s.status, ai_variant: (s.assignment || {}).ai_variant || null }, t)); }); }); return rows; }
 function flowRows(list) { var rows = []; list.forEach(function (s) { (s.flow || []).forEach(function (f) { rows.push(Object.assign({ session_id: s.session_id, station_id: s.station_id }, f)); }); }); return rows; }
@@ -808,12 +655,8 @@ function exportFiles(list, sep, tag) {
   setTimeout(function () { download(base + '_tasks.csv', csv(TASK_COLS, taskRows(list), sep), 'text/csv;charset=utf-8'); }, 400);
   setTimeout(function () { download(base + '_flow.csv', csv(FLOW_COLS, flowRows(list), sep), 'text/csv;charset=utf-8'); }, 800);
 }
-function cellCounts(list) {
-  var c = {}; list.forEach(function (s) { if (s.status !== 'completed' || !s.assignment) return; var k = s.assignment.arch + (s.assignment.dir ? '-' + s.assignment.dir : '') + ' / ШІ ' + s.assignment.ai_variant; c[k] = (c[k] || 0) + 1; });
-  return c;
-}
 
-// ------------------------------------------------------------------ панель оператора
+// ------------------------------------------------------------------ панель оператора (Ctrl+Shift+O або 5 натискань у лівий верхній кут)
 function askPin(cb) {
   if ($('#pin-box')) return;
   var o = overlay('<h2>Панель оператора</h2><label for="pin">PIN</label><input id="pin" type="password" style="width:100%;padding:10px;border:1px solid #888;border-radius:6px;margin:8px 0"><div id="pin-err" class="err" style="display:none">Невірний PIN</div><div class="btn-row"><button class="btn" id="pin-ok" type="button">Увійти</button><button class="btn secondary" id="pin-cancel" type="button">Скасувати</button></div>');
@@ -833,114 +676,84 @@ function openOp() {
   OP = document.createElement('div'); OP.className = 'op'; OP.id = 'op'; pauseAll();
   OP.innerHTML = '<div class="wrap">' +
     '<div class="sec"><h2 style="margin:0 0 6px">Панель оператора · <span id="op-st"></span></h2><button class="btn" id="op-close" type="button">Закрити панель</button></div>' +
-    '<div class="sec"><h3>Стан</h3><div id="op-status"></div><button class="btn secondary" id="op-sync" type="button">Синхронізувати зараз</button><button class="btn secondary" id="op-test" type="button">Перевірити з\'єднання</button><button class="btn secondary" id="op-fs" type="button">Повний екран</button><p class="small" id="op-msg"></p></div>' +
-    '<div class="sec"><h3>Поточна сесія</h3><div id="op-cur"></div><button class="btn secondary" id="op-retry" type="button">Повторити збереження (C11)</button><button class="btn secondary" id="op-interrupt" type="button">Перервати сесію (interrupted)</button><button class="btn secondary" id="op-new" type="button">До екрана 1 (новий учасник)</button></div>' +
-    '<div class="sec"><h3>Повітряна тривога (C10)</h3><p class="small">З хмарою — на всіх станціях (або в Таблиці: аркуш Control, B1 = TRUE/FALSE). Без хмари — лише на цій станції.</p><button class="btn" id="op-alarm-on" type="button" style="background:#b00020;border-color:#b00020">Увімкнути тривогу</button><button class="btn secondary" id="op-alarm-off" type="button">Вимкнути тривогу</button></div>' +
-    '<div class="sec"><h3>Дані</h3><div class="half"><label class="f" for="op-src">Джерело</label><select id="op-src"><option value="local">Ця станція</option><option value="cloud">Хмара (усі станції)</option></select></div><div class="half"><label class="f" for="op-sep">Роздільник CSV</label><select id="op-sep"><option value=",">Кома — pandas, STATA, JASP, Google Sheets</option><option value=";">Крапка з комою — Excel з укр. налаштуваннями</option></select></div>' +
-      '<button class="btn" id="op-export" type="button">sessions.csv + tasks.csv + flow.csv</button><button class="btn secondary" id="op-backup" type="button">Резервна копія JSON</button><button class="btn secondary" id="op-import" type="button">Імпорт JSON</button><input type="file" id="op-file" accept=".json" style="display:none"><div id="op-cells" class="small" style="margin-top:10px"></div></div>' +
-    '<div class="sec"><h3>Налаштування</h3><div class="half"><label class="f" for="op-station">ID станції</label><input type="text" id="op-station"></div><div class="half"><label class="f" for="op-mode">Режим</label><select id="op-mode"><option value="auto">Авто</option><option value="local_sync">Локально + автосинхронізація</option><option value="cloud_strict">Хмара — суворо (без локальної черги)</option><option value="local">Лише локально</option></select></div>' +
+    '<div class="sec"><h3>Стан</h3><div id="op-status"></div><button class="btn secondary" id="op-sync" type="button">Синхронізувати зараз</button><button class="btn secondary" id="op-test" type="button">Перевірити з\'єднання</button><p class="small" id="op-msg"></p></div>' +
+    '<div class="sec"><h3>Поточна сесія</h3><div id="op-cur"></div><button class="btn secondary" id="op-retry" type="button">Повторити збереження</button><button class="btn secondary" id="op-new" type="button">До першого екрана (новий учасник)</button></div>' +
+    '<div class="sec"><h3>Дані</h3><div class="half"><label class="f" for="op-src">Джерело</label><select id="op-src"><option value="local">Цей пристрій</option><option value="cloud">Таблиця (усі пристрої)</option></select></div><div class="half"><label class="f" for="op-sep">Роздільник CSV</label><select id="op-sep"><option value=",">Кома — pandas, STATA, JASP, Google Sheets</option><option value=";">Крапка з комою — Excel з укр. налаштуваннями</option></select></div>' +
+      '<button class="btn" id="op-export" type="button">sessions.csv + tasks.csv + flow.csv</button><button class="btn secondary" id="op-backup" type="button">Резервна копія JSON</button><button class="btn secondary" id="op-import" type="button">Імпорт JSON</button><input type="file" id="op-file" accept=".json" style="display:none"></div>' +
+    '<div class="sec"><h3>Налаштування</h3><div class="half"><label class="f" for="op-station">ID пристрою</label><input type="text" id="op-station"></div><div class="half"><label class="f" for="op-mode">Режим</label><select id="op-mode"><option value="auto">Авто</option><option value="local_sync">Локально + автосинхронізація з Таблицею</option><option value="local">Лише локально</option></select></div>' +
       '<label class="f" for="op-endpoint">URL вебзастосунку Apps Script (…/exec)</label><input type="text" id="op-endpoint" placeholder="https://script.google.com/macros/s/…/exec">' +
-      '<div class="half"><label class="f" for="op-pin">PIN оператора</label><input type="text" id="op-pin"></div><div class="half"><label class="f">&nbsp;</label><label><input type="checkbox" id="op-fullscreen"> Повний екран на старті сесії</label></div>' +
-      '<button class="btn" id="op-save" type="button">Зберегти</button><button class="btn secondary" id="op-dl" type="button">Завантажити налаштований файл для інших ПК</button></div>' +
-    '<div class="sec"><h3>Перегляд екранів (без запису)</h3><div class="half"><label class="f" for="pv">Екран</label><select id="pv">' +
-      '<option value="s6|N|">6 — вибір (усі умови)</option><option value="s7|N|">7 — підтвердження, N</option><option value="s7|M|anti">7 — dominance, підсилено картку</option><option value="s7|M|pro">7 — dominance, підсилено CBDC</option>' +
-      '<option value="s8|N|">8 — підтвердження, N</option><option value="s8|M|anti">8 — таймер, підсилено картку</option><option value="s8|M|pro">8 — таймер, підсилено CBDC</option><option value="s11a|A|">11 — відповідь ШІ, варіант А</option><option value="s11a|B|">11 — відповідь ШІ, варіант Б</option></select></div>' +
-      '<div class="half"><label class="f" for="pv-pos">Позиція CBDC на нейтральних екранах</label><select id="pv-pos"><option value="left">ліворуч</option><option value="right">праворуч</option></select></div><button class="btn secondary" id="pv-go" type="button">Показати</button></div>' +
-    '<div class="sec"><h3>Підключення Google Таблиці (один раз)</h3><ol><li>Створіть Google Таблицю → <b>Розширення → Apps Script</b>.</li><li>У файл <b>Code.gs</b> вставте код нижче; змініть PIN у першому рядку на ваш.</li><li>Для телефонів: <b>Файли → + → HTML</b>, назва <b>Index</b>; вставте весь вміст цього HTML-файлу.</li><li><b>Розгорнути → Нове розгортання → Вебзастосунок</b>; виконувати як: <b>Я</b>; доступ: <b>Усі</b>.</li><li>URL …/exec — у поле вище (для ПК), «Зберегти», «Перевірити з\'єднання», «Завантажити налаштований файл». Цей самий URL — посилання для телефонів.</li></ol><textarea id="op-gas" readonly></textarea></div>' +
+      '<div class="half"><label class="f" for="op-pin">PIN оператора (порожньо — перевіряє лише сервер)</label><input type="text" id="op-pin"></div>' +
+      '<button class="btn" id="op-save" type="button">Зберегти</button><button class="btn secondary" id="op-dl" type="button">Завантажити налаштований файл</button></div>' +
+    '<div class="sec"><h3>Перегляд екранів (без запису)</h3><select id="pv" style="max-width:420px"><option value="s6">Екран 6 — вибір</option><option value="s7">Екран 7 — підтвердження</option><option value="s8">Екран 8 — підтвердження з таймером</option><option value="s11a|A">Відповідь ШІ — варіант А</option><option value="s11a|B">Відповідь ШІ — варіант Б</option></select><button class="btn secondary" id="pv-go" type="button">Показати</button></div>' +
     '</div>';
   document.body.appendChild(OP);
-  $('#op-gas').value = ($('#gas-code') || {}).textContent || '';
   fillOp(); renderOpStatus();
   on($('#op-close'), 'click', closeOp);
   on($('#op-sync'), 'click', function () { syncNow(renderOpStatus); });
-  on($('#op-test'), 'click', function () { var m = $('#op-msg'); m.textContent = 'Перевірка…'; post({ action: 'ping' }, 15000, function (err, r) { if (err) { LAST_PING = { ok: false, at: nowIso() }; m.innerHTML = '<span class="bad">Немає з\'єднання:</span> ' + esc(err.message || err); } else { LAST_PING = { ok: true, at: nowIso() }; m.innerHTML = '<span class="ok">З\'єднання є.</span> Сервер ' + esc(r.server_version) + ', тривога: ' + (r.alarm ? 'так' : 'ні'); } renderOpStatus(); }); });
-  on($('#op-fs'), 'click', requestFs);
-  on($('#op-retry'), 'click', function () {
-    if (!S) return;
-    savingOn(); persist(S, function (ok) { savingOff(); if (!ok) { $('#op-msg').innerHTML = '<span class="bad">Сервер знову не підтвердив.</span>'; return; } removeEl($('#c11')); closeOp(); if (C11_CTX === 'withdraw') toStart(); else next(); });
-  });
-  on($('#op-interrupt'), 'click', function () {
-    if (!S) return;
-    S.status = 'interrupted'; S.interruption_reason = ALARM_ON ? 'alarm' : ($('#c11') ? 'technical' : 'operator'); logFlow(CUR ? CUR.key : null, 'interrupted', S.interruption_reason);
-    removeEl($('#c11')); removeEl($('#c10')); ALARM_ON = false;
-    persist(S, function () { closeOp(); toStart(); });
-  });
-  on($('#op-new'), 'click', function () { $$('.ov').forEach(removeEl); ALARM_ON = false; S = null; closeOp(); SCREENS.s1(); });
-  on($('#op-alarm-on'), 'click', function () { if (cloudOn()) post({ action: 'setAlarm', on: true, pin: opPin() }, 15000, function (err) { ALARM_SRC = err ? 'local' : 'cloud'; closeOp(); alarmOn(ALARM_SRC); }); else { ALARM_SRC = 'local'; closeOp(); alarmOn('local'); } });
-  on($('#op-alarm-off'), 'click', function () { function off() { ALARM_SRC = null; closeOp(); alarmOff('operator'); } if (cloudOn()) post({ action: 'setAlarm', on: false, pin: opPin() }, 15000, off); else off(); });
+  on($('#op-test'), 'click', function () { var m = $('#op-msg'); m.textContent = 'Перевірка…'; post({ action: 'ping' }, 15000, function (err, r) { if (err) { LAST_PING = { ok: false, at: nowIso() }; m.innerHTML = '<span class="bad">Немає з\'єднання:</span> ' + esc(err.message || err); } else { LAST_PING = { ok: true, at: nowIso() }; m.innerHTML = '<span class="ok">З\'єднання є.</span> Сервер ' + esc(r.server_version); } renderOpStatus(); }); });
+  on($('#op-retry'), 'click', function () { if (!S) return; persist(S, function (ok) { if (!ok) { $('#op-msg').innerHTML = '<span class="bad">Не вдалося зберегти.</span>'; return; } removeEl($('#c11')); closeOp(); if (TECH_CTX === 'withdraw') toStart(); else next(); }); });
+  on($('#op-new'), 'click', function () { $$('.ov').forEach(removeEl); setActive(null); S = null; closeOp(); SCREENS.s1(); });
   on($('#op-export'), 'click', function () {
     var sep = $('#op-sep').value, m = $('#op-msg');
     if ($('#op-src').value === 'local') { exportFiles(allLocal(), sep, SETTINGS.station_id); m.textContent = 'Експортовано сесій: ' + allLocal().length; return; }
-    m.textContent = 'Завантаження з хмари…';
+    m.textContent = 'Завантаження з Таблиці…';
     post({ action: 'export', pin: opPin() }, 60000, function (err, r) {
-      if (err) { m.innerHTML = '<span class="bad">Помилка:</span> ' + esc(err.message || err) + (String(err.message) === 'pin' ? ' — PIN не збігається з OPERATOR_PIN у Code.gs' : '') + (String(err.message) === 'pin_locked' ? ' — забагато невдалих спроб PIN; сервер заблокував вивантаження на годину' : ''); return; }
-      exportFiles(r.sessions, sep, 'all'); m.innerHTML = '<span class="ok">Експортовано сесій: ' + r.sessions.length + '</span>; відмов на екрані 1: ' + r.declined_count;
-      renderCells(r.sessions, 'хмара');
+      if (err) { var e = String(err.message || err); m.innerHTML = '<span class="bad">Помилка:</span> ' + esc(e) + (e === 'pin' ? ' — PIN не збігається з OPERATOR_PIN у Code.gs' : '') + (e === 'pin_locked' ? ' — забагато невдалих спроб; вивантаження заблоковано на годину' : ''); return; }
+      exportFiles(r.sessions, sep, 'all'); m.innerHTML = '<span class="ok">Експортовано сесій: ' + r.sessions.length + '</span>; відмов на першому екрані: ' + r.declined_count;
     });
   });
-  on($('#op-backup'), 'click', function () { download('cbdc_backup_' + SETTINGS.station_id + '_' + stamp() + '.json', JSON.stringify({ format: 'cbdc-backup', exported_at: nowIso(), station_id: SETTINGS.station_id, declined_count: lsGet('tp2.declined') || 0, sessions: allLocal() }), 'application/json'); });
+  on($('#op-backup'), 'click', function () { download('cbdc_backup_' + SETTINGS.station_id + '_' + stamp() + '.json', JSON.stringify({ format: 'cbdc-backup-v3', exported_at: nowIso(), station_id: SETTINGS.station_id, declined_count: lsGet('tp3.declined') || 0, sessions: allLocal() }), 'application/json'); });
   on($('#op-import'), 'click', function () { $('#op-file').click(); });
   on($('#op-file'), 'change', function (e) {
     var f = e.target.files[0]; if (!f) return; var rd = new FileReader();
     rd.onload = function () { try { var j = JSON.parse(rd.result), n = 0; (j.sessions || []).forEach(function (s) { if (!s.session_id) return; var ex = getLocal(s.session_id); if (!ex || (ex.rev || 0) < (s.rev || 0)) { putLocal(s); n++; } }); $('#op-msg').textContent = 'Імпортовано/оновлено сесій: ' + n; renderOpStatus(); if (cloudOn()) syncNow(); } catch (err) { $('#op-msg').textContent = 'Помилка JSON: ' + err.message; } };
     rd.readAsText(f, 'utf-8');
   });
-  on($('#op-save'), 'click', function () { readOp(); saveSettings(); $('#op-msg').innerHTML = '<span class="ok">Збережено.</span>'; renderOpStatus(); startPolling(); });
+  on($('#op-save'), 'click', function () { readOp(); saveSettings(); $('#op-msg').innerHTML = '<span class="ok">Збережено.</span>'; renderOpStatus(); });
   on($('#op-dl'), 'click', function () {
     readOp(); SETTINGS.cfg_version = new Date().getTime(); saveSettings();
-    var cfg = { endpoint: SETTINGS.endpoint, mode: SETTINGS.mode, station_id: '', operator_pin: SETTINGS.operator_pin, poll_sec: SETTINGS.poll_sec, fullscreen: SETTINGS.fullscreen, cfg_version: SETTINGS.cfg_version };
+    var cfg = { endpoint: SETTINGS.endpoint, mode: SETTINGS.mode, station_id: '', operator_pin: SETTINGS.operator_pin, cfg_version: SETTINGS.cfg_version };
     var html = INITIAL_HTML.replace(/(<script id="tp-config" type="application\/json">)[\s\S]*?(<\/script>)/, function (m0, a, b) { return a + JSON.stringify(cfg).replace(/</g, '\\u003c') + b; });
-    download('cbdc_experiment.html', html, 'text/html;charset=utf-8');
+    download('index.html', html, 'text/html;charset=utf-8');
   });
-  on($('#pv-go'), 'click', function () { var p = $('#pv').value.split('|'), pos = $('#pv-pos').value; closeOp(); preview(p[0], p[1], p[2], pos); });
+  on($('#pv-go'), 'click', function () { var p = $('#pv').value.split('|'); closeOp(); preview(p[0], p[1]); });
 }
-function fillOp() { $('#op-st').textContent = SETTINGS.station_id + (GS ? ' (відкрито за посиланням)' : ''); $('#op-station').value = SETTINGS.station_id; $('#op-mode').value = SETTINGS.mode || 'auto'; $('#op-endpoint').value = SETTINGS.endpoint || ''; $('#op-pin').value = SETTINGS.operator_pin; $('#op-fullscreen').checked = !!SETTINGS.fullscreen; }
-function readOp() { SETTINGS.station_id = $('#op-station').value.replace(/^\s+|\s+$/g, '') || SETTINGS.station_id; SETTINGS.mode = $('#op-mode').value; SETTINGS.endpoint = $('#op-endpoint').value.replace(/^\s+|\s+$/g, ''); SETTINGS.operator_pin = $('#op-pin').value.replace(/^\s+|\s+$/g, '') || SETTINGS.operator_pin; SETTINGS.fullscreen = $('#op-fullscreen').checked; }
-function renderCells(list, src) {
-  var c = cellCounts(list), ks = Object.keys(c).sort();
-  var el = $('#op-cells'); if (el) el.innerHTML = '<b>Завершені сесії за умовами (' + src + '):</b> ' + (ks.length ? ks.map(function (k) { return k + ': ' + c[k]; }).join(' · ') : 'ще немає');
-}
+function fillOp() { $('#op-st').textContent = SETTINGS.station_id; $('#op-station').value = SETTINGS.station_id; $('#op-mode').value = SETTINGS.mode === 'local' || SETTINGS.mode === 'local_sync' ? SETTINGS.mode : 'auto'; $('#op-endpoint').value = SETTINGS.endpoint || ''; $('#op-pin').value = SETTINGS.operator_pin || ''; }
+function readOp() { SETTINGS.station_id = $('#op-station').value.replace(/^\s+|\s+$/g, '') || SETTINGS.station_id; SETTINGS.mode = $('#op-mode').value; SETTINGS.endpoint = $('#op-endpoint').value.replace(/^\s+|\s+$/g, ''); SETTINGS.operator_pin = $('#op-pin').value.replace(/^\s+|\s+$/g, ''); }
 function renderOpStatus() {
   if (!OP) return;
-  var MODES = { local: 'Лише локально', local_sync: 'Локально + автосинхронізація', cloud_strict: 'Хмара — суворо' };
   var all = allLocal(), un = unsynced();
   $('#op-status').innerHTML = kv([
-    ['Режим', MODES[mode()] + (GS ? ' · через Apps Script' : '')],
-    ['Хмара', hasCloud() ? (LAST_PING ? (LAST_PING.ok ? '<span class="ok">на зв\'язку</span>' : '<span class="bad">немає зв\'язку</span>') : 'не перевірялась') : '<span class="bad">не налаштована</span>'],
-    ['Локальне сховище', LS_OK ? '<span class="ok">доступне</span>' : '<span class="bad">недоступне — дані лише в пам\'яті до закриття сторінки; потрібна хмара</span>'],
-    ['Сесій на станції', all.length + ' (завершено: ' + all.filter(function (s) { return s.status === 'completed'; }).length + ')'],
-    ['Не вивантажено', hasCloud() ? (un.length ? '<span class="bad">' + un.length + '</span>' : '<span class="ok">0</span>') : '—'],
-    ['Відмов на екрані 1', lsGet('tp2.declined') || 0], ['Тривога', ALARM_ON ? '<span class="bad">УВІМКНЕНА</span>' : 'вимкнена']]);
-  $('#op-cur').innerHTML = S ? kv([['session_id', esc(S.session_id)], ['Екран', CUR ? esc(CUR.key || '—') : '—'], ['Збережено екранів', S.saved.length], ['Умова', S.assignment ? esc(S.assignment.arch + (S.assignment.dir ? ' · ' + S.assignment.dir : '') + ' · ШІ ' + S.assignment.ai_variant + ' · ' + S.assignment.source) : 'ще не призначено'], ['C11', $('#c11') ? '<span class="bad">так</span>' : 'ні']]) : kv([['Активна сесія', 'немає']]);
-  renderCells(all, 'ця станція');
+    ['Режим', mode() === 'local' ? 'Лише локально' : 'Локально + автосинхронізація з Таблицею'],
+    ['Таблиця', hasCloud() ? (LAST_PING ? (LAST_PING.ok ? '<span class="ok">на зв\'язку</span>' : '<span class="bad">немає зв\'язку</span>') : 'не перевірялась') : '<span class="bad">не налаштована</span>'],
+    ['Сховище браузера', LS_OK ? '<span class="ok">доступне</span>' : '<span class="bad">недоступне — дані лише в пам\'яті до закриття сторінки</span>'],
+    ['Сесій на пристрої', all.length + ' (завершено: ' + all.filter(function (s) { return s.status === 'completed'; }).length + ')'],
+    ['Не вивантажено в Таблицю', hasCloud() ? (un.length ? '<span class="bad">' + un.length + '</span>' : '<span class="ok">0</span>') : '—'],
+    ['Відмов на першому екрані', lsGet('tp3.declined') || 0]]);
+  $('#op-cur').innerHTML = S ? kv([['Код сесії', esc(S.session_id)], ['Екран', CUR ? esc(CUR.key || '—') : '—'], ['Збережено екранів', S.saved.length], ['Відповідь ШІ', S.assignment ? S.assignment.ai_variant + ' (' + S.assignment.source + ')' : 'ще не призначено']]) : kv([['Активна сесія', 'немає']]);
 }
 function closeOp() { removeEl(OP); OP = null; resumeAll(); }
-function preview(screen, a1, a2, pos) {
-  PREVIEW = true;
-  S = newSession(); S.draws.pos_cbdc = pos;
-  if (screen === 's11a') { S.assignment = { arch: 'N', ai_variant: a1 }; render('<div class="ai-answer"><div class="who">Відповідь ШІ (перегляд, варіант ' + a1 + ')</div>' + esc(AI_TEXT[a1]) + '</div><div class="btn-row"><button class="btn" id="go" type="button">Далі</button></div>', null); on($('#go'), 'click', function () { PREVIEW = false; S = null; SCREENS.s1(); }); return; }
-  S.assignment = { arch: a1, dir: a2 || null, ai_variant: 'A' };
-  renderTask(taskSpec(screen));
-  var sb = $('#stop-btn'); if (sb) { removeEl(sb); }
+function preview(screen, v) {
+  PREVIEW = true; S = newSession();
+  if (screen === 's11a') { render('<div class="ai-answer"><div class="who">Відповідь ШІ (перегляд, варіант ' + v + ')</div>' + esc(AI_TEXT[v]) + '</div><div class="btn-row"><button class="btn pick" id="go" type="button">Далі</button></div>', null); on($('#go'), 'click', function () { PREVIEW = false; S = null; SCREENS.s1(); }); return; }
+  renderTask(screen); removeEl($('#stop-btn'));
 }
-
 on(document, 'keydown', function (e) { if (e.ctrlKey && e.shiftKey && (e.keyCode === 79)) { if (e.preventDefault) e.preventDefault(); askPin(openOp); } });
 var corner = { n: 0, t: 0 };
-on(document, 'click', function (e) { var x = e.clientX, y = e.clientY; if (x < 70 && y < 70) { var n = new Date().getTime(); corner.n = n - corner.t < 900 ? corner.n + 1 : 1; corner.t = n; if (corner.n >= 5) { corner.n = 0; askPin(openOp); } } });
+on(document, 'click', function (e) { if (e.clientX < 70 && e.clientY < 70) { var n = new Date().getTime(); corner.n = n - corner.t < 900 ? corner.n + 1 : 1; corner.t = n; if (corner.n >= 5) { corner.n = 0; askPin(openOp); } } });
 
+// «Повернутися до завершеної сторінки не можна» (макет, екран 2): кнопка «Назад» не повертає
 try { if (history.pushState) { history.pushState({ tp: 1 }, '', location.href); window.addEventListener('popstate', function () { try { history.pushState({ tp: 1 }, '', location.href); } catch (e) {} }); } } catch (e) {}
 window.onbeforeunload = function (e) { if (S && S.status === 'in_progress' && !PREVIEW) { var m = 'Сесія триває.'; (e || window.event).returnValue = m; return m; } };
-
-var pollT = null;
-function startPolling() { clearInterval(pollT); if (cloudOn()) { pollAlarm(); pollT = setInterval(function () { pollAlarm(); syncNow(); }, Math.max(5, SETTINGS.poll_sec || 15) * 1000); } }
+setInterval(function () { if (cloudOn()) syncNow(); }, 20000);
 
 (function init() {
-  var act = lsGet('tp2.active'), prev = act ? getLocal(act) : null;
-  if (prev && prev.status === 'in_progress' && prev.saved && prev.saved.length) showC12(prev);
+  // якщо сторінку перезавантажили посеред проходження — тихо продовжуємо з першого незбереженого екрана
+  var act = lsGet('tp3.active'), prev = act ? getLocal(act) : null;
+  if (prev && prev.status === 'in_progress' && prev.saved && prev.saved.length) { S = prev; S.resumed = (S.resumed || 0) + 1; logFlow('resume', 'resume'); next(); }
   else { setActive(null); SCREENS.s1(); }
-  startPolling();
-  window.TP = { version: APP_VERSION, flat: flat, makeDraws: makeDraws, state: function () { return S; }, screen: function () { return CUR ? CUR.key : null; }, busy: function () { return BUSY; },
-    settings: SETTINGS, setUrgency: function (x) { URGENCY_SEC = x; }, setAiWait: function (x) { AI_WAIT_MS = x; }, slots: SLOTS, cellCounts: cellCounts };
+  if (cloudOn()) syncNow();
+  window.TP = { version: APP_VERSION, flat: flat, state: function () { return S; }, screen: function () { return CUR ? CUR.key : null; }, busy: function () { return BUSY; }, settings: SETTINGS, flow: FLOW };
 })();
 })();
 
