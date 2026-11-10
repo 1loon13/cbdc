@@ -93,7 +93,7 @@ p{margin:0 0 14px}
 .linkbtn{background:none;border:none;padding:6px 2px;color:#5f5f5f;font-size:14px;text-decoration:underline;cursor:pointer}
 .timer{margin:6px 0 8px;color:#111}
 .timer .digits{font-size:30px;font-weight:700;color:#b3122b;margin-right:12px;vertical-align:middle;font-variant-numeric:tabular-nums}
-.timer .tlabel{vertical-align:middle;font-size:15px}
+.timer .tlabel{vertical-align:middle;font-size:15px;display:inline-block}
 .expired{border:2px solid #8a4b00;background:#fff8ec;border-radius:8px;padding:12px 16px;margin-bottom:8px;font-weight:600;color:#6b3a00}
 /* ШІ */
 .ai-intro{font-size:19px;color:#1d3a5f}
@@ -256,7 +256,7 @@ function lsDel(k) { delete MEM[k]; if (LS_OK) { try { localStorage.removeItem(k)
 var GS = !!(window.google && google.script && google.script.run);
 var EMBED = {}; try { EMBED = JSON.parse(($('#tp-config') || {}).textContent || '{}'); } catch (e) {}
 var LOCALSET = lsGet('tp3.settings') || {};
-var SETTINGS = Object.assign({ endpoint: '', mode: 'auto', station_id: '', operator_pin: '2468', cfg_version: 0 }, EMBED, LOCALSET);
+var SETTINGS = Object.assign({ endpoint: '', mode: 'auto', station_id: '', operator_pin: '', cfg_version: 0 }, EMBED, LOCALSET);
 if ((EMBED.cfg_version || 0) > (LOCALSET.cfg_version || 0)) Object.assign(SETTINGS, EMBED, { station_id: LOCALSET.station_id || '' });
 ['endpoint', 'mode', 'station_id'].forEach(function (k) { var v = qs(k); if (v) SETTINGS[k] = v; });
 // лише для автоперевірок: ?urg=секунд&aiwait=мс
@@ -433,9 +433,9 @@ SCREENS.s1 = function () {
   S = null;
   render('<h1>Дослідження вибору платіжних засобів</h1>' +
     '<p>Запрошуємо вас узяти участь у дослідженні поведінкової лабораторії Західноукраїнського національного університету. Вам пропонується розглянути уявні платіжні ситуації та відповісти на запитання. Нас цікавлять ваші власні рішення; правильних відповідей немає, і ваші відповіді не впливають на оцінки чи навчання.</p>' +
-    '<p>Нас цікавить, наскільки респонденти зацікавлені у здійсненні платежів традиційними платіжними інструментами, наприклад, банківською карткою, чи альтернативними засобами, які поєднують сучасні технології та забезпеченість виконання транзакції функціональною спроможністю центрального банку, а не приватної платіжної системи.</p>' +
+    '<p>Нас цікавить, на скільки респонденти зацікавлені у здійсненні платежів традиційними платіжними інструментами, наприклад, банківською карткою, чи альтернативними засобами, які поєднують сучасні технології та забезпеченість виконання транзакції функціональною спроможністю центрального банку, а не приватної платіжної системи.</p>' +
     '<p>CBDC – цифрова валюта центрального банку – розглядається як альтернатива традиційним платіжним інструментам у вигляді карткових розрахунків. CBDC здебільшого спирається на технологію block-chain, ідентичну тій, на якій побудована екосистема криптовалют. Але CBDC можуть відрізнятися дизайном, зокрема тим, у який спосіб відбувається ідентифікація клієнта, і у який спосіб гарантується приватність його платіжної історії.</p>' +
-    '<p>В Україні також відбуваються тестування можливостей запровадження цифрової валюти. Е-гривня – цифрова форма гривні, по суті, вітчизняна CBDC, можливість використання якої досліджує Національний банк України.</p>' +
+    '<p>В Україні також відбуваються тестування можливостей запровадження цифрової валюти. Е-гривня – цифрова форма гривні, по-суті, вітчизняна CBDC, можливість використання якої досліджує Національний банк України.</p>' +
     '<p>Деякі роз’яснення щодо даного опитування. Усі застосунки, умови та пропозиції в цьому дослідженні уявні. Ви не відкриваєте реальних рахунків і не витрачаєте власних коштів.</p>' +
     '<p>Участь добровільна й триватиме приблизно 12 хвилин. Ми зберігаємо відповіді, час дій і випадковий код сесії. Ми не просимо імені, номера телефону, електронної адреси чи реквізитів рахунків. Ви можете припинити участь і відкликати відповіді будь-коли до завершення. Відмова не впливає на навчання чи передбачену винагороду.</p>' +
     '<label class="check"><input type="checkbox" id="c18"> Мені виповнилося 18 років.</label>' +
@@ -463,7 +463,7 @@ SCREENS.s2 = function () {
   on($('#go'), 'click', function () { complete('s2', function (ms) { S.answers.rt_instr = ms; }); });
 };
 SCREENS.s3 = function () { simpleScreen('s3', '<h1>Наскільки ви довіряєте кожній із цих установ?</h1>' + rowsOf(TRUST, 10, ['1 – Зовсім не довіряю', '10 – Повністю довіряю']), keys(TRUST), 'rt_s3'); };
-SCREENS.s4a = function () { simpleScreen('s4a', '<h1>У який спосіб Ви віддаєте перевагу здійснювати щоденні платежі?</h1>' + rowsOf(PAY, 10), keys(PAY), 'rt_s4a'); };
+SCREENS.s4a = function () { simpleScreen('s4a', '<h1>У який спосіб Ви віддаєте перевагу здійснювати щоденні платежі?</h1><p class="muted small">Сторінка 4 · питання 1–3 із 5</p>' + rowsOf(PAY, 10), keys(PAY), 'rt_s4a'); };
 SCREENS.s4b = function () { simpleScreen('s4b', '<h1>Що для Вас є пріоритетним при виборі платіжного засобу?</h1>' + rowsOf(PRIO, 10), keys(PRIO), 'rt_s4b'); };
 SCREENS.s4c = function () {
   simpleScreen('s4c', '<div class="q"><div class="q-title">Чи чули ви про CBDC до початку цього дослідження?</div>' + radios('cbdc_aware', AWARE) + '</div>' +
@@ -568,7 +568,7 @@ SCREENS.s11q = function () {
 };
 SCREENS.s11a = function () {
   var v = S.assignment.ai_variant;
-  simpleScreen('s11a', '<div class="ai-answer"><div class="who">Відповідь ШІ</div>' + esc(AI_TEXT[v]) + '</div>', [], 'rt_ai_read', { ai_variant: v });
+  simpleScreen('s11a', '<div class="ai-answer">' + esc(AI_TEXT[v]) + '</div>', [], 'rt_ai_read', { ai_variant: v });
 };
 SCREENS.s12 = function () {
   render('<p class="lead">Ви повертаєтеся до попереднього сценарію вибору. Умови користування залишаються тими самими.</p><h2>Який варіант ви обираєте для здійснення щоденних платежів?</h2>' +
@@ -740,7 +740,7 @@ function preview(screen, v) {
 }
 on(document, 'keydown', function (e) { if (e.ctrlKey && e.shiftKey && (e.keyCode === 79)) { if (e.preventDefault) e.preventDefault(); askPin(openOp); } });
 var corner = { n: 0, t: 0 };
-on(document, 'click', function (e) { if (e.clientX < 70 && e.clientY < 70) { var n = new Date().getTime(); corner.n = n - corner.t < 900 ? corner.n + 1 : 1; corner.t = n; if (corner.n >= 5) { corner.n = 0; askPin(openOp); } } });
+on(document, 'click', function (e) { if (e.detail > 0 && (e.clientX > 0 || e.clientY > 0) && e.clientX < 70 && e.clientY < 70) { var n = new Date().getTime(); corner.n = n - corner.t < 900 ? corner.n + 1 : 1; corner.t = n; if (corner.n >= 5) { corner.n = 0; askPin(openOp); } } });
 
 // «Повернутися до завершеної сторінки не можна» (макет, екран 2): кнопка «Назад» не повертає
 try { if (history.pushState) { history.pushState({ tp: 1 }, '', location.href); window.addEventListener('popstate', function () { try { history.pushState({ tp: 1 }, '', location.href); } catch (e) {} }); } } catch (e) {}
