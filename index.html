@@ -465,7 +465,7 @@ SCREENS.s2 = function () {
 };
 SCREENS.s3 = function () { simpleScreen('s3', '<h1>Наскільки ви довіряєте кожній із цих установ?</h1>' + rowsOf(TRUST, 10, ['1 – Зовсім не довіряю', '10 – Повністю довіряю']), keys(TRUST), 'rt_s3'); };
 SCREENS.s4a = function () { simpleScreen('s4a', '<h1>У який спосіб Ви віддаєте перевагу здійснювати щоденні платежі?</h1><p class="muted small">Сторінка 4 · питання 1–3 із 5</p>' + rowsOf(PAY, 10, ['1 – Зовсім не віддаю переваги', '10 – Повністю віддаю перевагу']), keys(PAY), 'rt_s4a'); };
-SCREENS.s4b = function () { simpleScreen('s4b', '<h1>Що для Вас є пріоритетним при виборі платіжного засобу?</h1>' + rowsOf(PRIO, 10), keys(PRIO), 'rt_s4b'); };
+SCREENS.s4b = function () { simpleScreen('s4b', '<h1>Що для Вас є пріоритетним при виборі платіжного засобу?</h1>' + rowsOf(PRIO, 10, ['1 – Зовсім не важливо', '10 – Дуже важливо']), keys(PRIO), 'rt_s4b'); };
 SCREENS.s4c = function () {
   simpleScreen('s4c', '<div class="q"><div class="q-title">Чи чули ви про CBDC до початку цього дослідження?</div>' + radios('cbdc_aware', AWARE) + '</div>' +
     '<div class="q"><div class="q-title">Чи чули ви про е-гривню до початку цього дослідження?</div>' + radios('ehr_aware', AWARE) + '</div>' +
